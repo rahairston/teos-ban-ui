@@ -19,15 +19,15 @@ export const authReducer = createSlice({
   reducers: {
     loginSuccessful: (state, action: PayloadAction<TokenResponse>) => {
       state.loggingIn = false;
-      if (action.payload.access_token) {
-        state.accessToken = action.payload.access_token;
+      if (action.payload.accessToken) {
+        state.accessToken = action.payload.accessToken;
       }
-      if (action.payload.refresh_token) {
-        state.refreshToken = action.payload.refresh_token;
+      if (action.payload.refreshToken) {
+        state.refreshToken = action.payload.refreshToken;
       }
       state.email = action.payload.email;
-      state.displayName = action.payload.display_name;
-      state.profilePicture = action.payload.profile_image_url;
+      state.displayName = action.payload.displayName;
+      state.profilePicture = action.payload.profileImageUrl;
     },
     logout: (state) => {
       state = initialState;
@@ -38,8 +38,8 @@ export const authReducer = createSlice({
 export const LoginAction = (authCode: string) => (dispatch: Dispatch) => {
   fetchToken(authCode).then((data: TokenResponse) => {
       setTimeout(() => {
-        RefreshAction(data.refresh_token)(dispatch);
-      }, data.expires_in * 1000);
+        RefreshAction(data.refreshToken)(dispatch);
+      }, data.expiresIn * 1000);
       dispatch(loginSuccessful(data));
   });
 }
@@ -47,8 +47,8 @@ export const LoginAction = (authCode: string) => (dispatch: Dispatch) => {
 export const RefreshAction = (token: string) => (dispatch: Dispatch) => {
   refreshToken(token).then((data: TokenResponse) => {
       setTimeout(() => {
-        RefreshAction(data.refresh_token)(dispatch);
-      }, data.expires_in * 1000);
+        RefreshAction(data.refreshToken)(dispatch);
+      }, data.expiresIn * 1000);
       dispatch(loginSuccessful(data));
   });
 }
