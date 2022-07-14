@@ -6,19 +6,14 @@ import { LoginAction } from './reducer';
 import BuildUrl from 'build-url';
 
 import { clientId, redirectUri, OAUTH_STATE_KEY } from "../../constants";
+import { Button } from 'semantic-ui-react';
+import axios from 'axios';
 
 interface IProps {
     login: (authCode: string) => void;
-}
-
-interface IBanState {
-  auth: IState;
-}
-
-interface IState {
-  displayName?: string;
-  profilePicture?: string;
-  accessToken?: string;
+    displayName?: string;
+    profilePicture?: string;
+    accessToken?: string;
 }
 
 const generateState = () => {
@@ -36,8 +31,7 @@ const generateState = () => {
 
 function Auth(props: IProps) {
   let [searchParams, setSearchParams] = useSearchParams();
-  const displayName = useSelector((state: IBanState) => state.auth.displayName);
-  const accessToken = useSelector((state: IBanState) => state.auth.accessToken);
+  const {displayName, accessToken} = props;
 
   let code = searchParams.get("code");
   let authState = searchParams.get("state");
@@ -79,10 +73,11 @@ function Auth(props: IProps) {
 };
 
 const mapStateToProps = (state: BanState) => {
+  console.log("Mappiong state to props", state);
   return { 
-    displayName: state.displayName,
-    profilePicture: state.profilePicture,
-    accessToken: state.accessToken
+    displayName: state.auth.displayName,
+    profilePicture: state.auth.profilePicture,
+    accessToken: state.auth.accessToken
   }
 }
 

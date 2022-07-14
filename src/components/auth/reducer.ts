@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchToken, refreshToken, TokenResponse } from './api';
 import { Dispatch } from 'redux';
-import { BanState } from '../../redux/state';
+import { AuthState } from './state';
 
-const initialState: BanState = {
+const initialState: AuthState = {
   accessToken: undefined,
   refreshToken: undefined,
   email: undefined,
