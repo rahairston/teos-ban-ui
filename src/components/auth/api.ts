@@ -1,7 +1,6 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import BuildUrl from "build-url";
 import {OAUTH_STATE_KEY} from "../../constants";
-import * as _ from "lodash";
 import { axiosInstance } from "../../util/axios";
 
 const {REACT_APP_API_URL, REACT_APP_BASE_PATH} = process.env;

@@ -1,19 +1,42 @@
 import './App.css';
 import { connect } from 'react-redux';
-import { useSearchParams } from "react-router-dom";
 import Auth from './auth/Auth';
+import { BanState } from '../redux/state';
+import { Button } from 'semantic-ui-react';
+import { axiosInstance } from '../util/axios';
+import Nav from './nav/Nav';
 
+interface IProps {
+  displayName?: string;
+  profilePicture?: string;
+  accessToken?: string;
+}
 
-function App(state: any, props: any) {
-  let [searchParams] = useSearchParams();
+const go = (token: string|undefined) => {
+  axiosInstance.get("http://localhost:8080/v1/teosban/appeal/").then(data => console.log(data));
+}
+
+function App(props: IProps) {
+
+  const {accessToken} = props;
   
   return (
     <div className="App">
+        <Nav />
         <header className="App-header">
-        <Auth />
+        {!accessToken && <Auth />}
+        {/* <Button onClick={()=>go(accessToken)}>Hi</Button> */}
         </header>
     </div>
   );
 };
 
-export default connect(null, null)(App);
+const mapStateToProps = (state: BanState) => {
+  return { 
+    displayName: state.auth.displayName,
+    profilePicture: state.auth.profilePicture,
+    accessToken: state.auth.accessToken
+  }
+}
+
+export default connect(mapStateToProps, null)(App);

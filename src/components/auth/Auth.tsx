@@ -1,13 +1,14 @@
-import { connect, useSelector } from 'react-redux';
+import './Auth.css'
+import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
 import { Dispatch } from 'redux';
 import { useSearchParams } from "react-router-dom";
 import { LoginAction } from './reducer';
 import BuildUrl from 'build-url';
+import { faTwitch } from '@fortawesome/free-brands-svg-icons';
 
 import { clientId, redirectUri, OAUTH_STATE_KEY } from "../../constants";
-import { Button } from 'semantic-ui-react';
-import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface IProps {
     login: (authCode: string) => void;
@@ -31,7 +32,7 @@ const generateState = () => {
 
 function Auth(props: IProps) {
   let [searchParams, setSearchParams] = useSearchParams();
-  const {displayName, accessToken} = props;
+  const {accessToken} = props;
 
   let code = searchParams.get("code");
   let authState = searchParams.get("state");
@@ -64,16 +65,15 @@ function Auth(props: IProps) {
   
   return (
     <div className="Auth">
-        <header className="App-header">
-          {!accessToken && <a href={twitchUrl}>Connect with Twitch</a>}
-          <p>Welcome {displayName}</p>
+        <header className="Auth-header">
+          Welcome to Teo's Ban Appeals
         </header>
+        Log in <a className="twitch-logo" href={twitchUrl}><FontAwesomeIcon color="#6441A5" icon={faTwitch} /></a>
     </div>
   );
 };
 
 const mapStateToProps = (state: BanState) => {
-  console.log("Mappiong state to props", state);
   return { 
     displayName: state.auth.displayName,
     profilePicture: state.auth.profilePicture,
