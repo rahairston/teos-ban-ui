@@ -83,8 +83,7 @@ const mapStateToProps = (state: BanState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    login: (authCode: string) => LoginAction(authCode)(dispatch),
-    logout: () => dispatch({ type: 'logout' })
+    login: (authCode: string) => LoginAction(authCode)(dispatch)
   }
 }
 

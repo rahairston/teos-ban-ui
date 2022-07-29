@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'Komika Title';
+  src: local('Komika'), url('./fonts/KOMTIT__.ttf') format('truetype')
+}

@@ -10,6 +10,8 @@ const initialState: AuthState = {
   email: undefined,
   displayName: undefined,
   profilePicture: undefined,
+  roles: undefined,
+  loggingIn: false,
   status: 'idle',
 };
 
@@ -26,12 +28,13 @@ export const authReducer = createSlice({
       if (action.payload.refreshToken) {
         state.refreshToken = action.payload.refreshToken;
       }
+      state.roles = action.payload.roles;
       state.email = action.payload.email;
       state.displayName = action.payload.displayName;
       state.profilePicture = action.payload.profileImageUrl;
     },
-    logout: (state) => {
-      state = initialState;
+    logout: () => {
+      return initialState;
     },
   }
 });

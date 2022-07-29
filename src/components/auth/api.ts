@@ -12,6 +12,7 @@ export interface TokenResponse {
   email: string;
   displayName: string;
   profileImageUrl: string;
+  roles: string[];
 }
 
 export function fetchToken(authCode: string): Promise<TokenResponse> {
