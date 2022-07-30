@@ -27,7 +27,7 @@ root.render(
             <BrowserRouter>
                 <Routes>
                 <Route path="/" element={<App />} />
-                <Route path="callback" element={<App />} />
+                <Route path="/redirect" element={<App />} />
                 </Routes>
             </BrowserRouter>
         </Provider>

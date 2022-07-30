@@ -1,9 +1,9 @@
 import './Nav.css';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
 import { Dropdown, Image, Menu } from 'semantic-ui-react';
-import { authReducer } from '../auth/reducer';
+import { logout } from '../auth/reducer';
 import { Dispatch } from 'redux';
 import { isUserAdmin } from '../../util/common';
 
@@ -117,7 +117,7 @@ const mapStateToProps = (state: BanState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    logout: () => dispatch({ type: authReducer.actions.logout.type })
+    logout: () => dispatch(logout())
   }
 }
 

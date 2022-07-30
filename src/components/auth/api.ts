@@ -27,6 +27,6 @@ export function fetchToken(authCode: string): Promise<TokenResponse> {
 };
 
 export function refreshToken(refreshToken: string): Promise<TokenResponse> {
-    return axios.get(`${REACT_APP_API_URL}${REACT_APP_BASE_PATH}/auth/token?refresh=${refreshToken}`);
+    return axios.get(`${REACT_APP_API_URL}${REACT_APP_BASE_PATH}/auth/token?refresh=${refreshToken}`).then(data => data.data);
 };
   

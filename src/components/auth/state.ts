@@ -6,5 +6,4 @@ export interface AuthState {
     profilePicture?: string;
     roles?: string[];
     loggingIn?: boolean;
-    status: 'idle' | 'loading' | 'failed';
 }

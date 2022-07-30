@@ -9,11 +9,13 @@ import { faTwitch } from '@fortawesome/free-brands-svg-icons';
 
 import { clientId, redirectUri, OAUTH_STATE_KEY } from "../../constants";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { PulseLoader } from 'react-spinners';
+import { CSSProperties } from 'react';
 
 interface IProps {
     login: (authCode: string) => void;
-    displayName?: string;
-    profilePicture?: string;
+    loggingIn?: boolean;
+    errorMessage?: string;
     accessToken?: string;
 }
 
@@ -30,9 +32,15 @@ const generateState = () => {
 	return randomState;
 };
 
+const override: CSSProperties = {
+  display: "block",
+  margin: "30vh 0 50px 0",
+  borderColor: "red"
+};
+
 function Auth(props: IProps) {
   let [searchParams, setSearchParams] = useSearchParams();
-  const {accessToken} = props;
+  const {accessToken, loggingIn} = props;
 
   let code = searchParams.get("code");
   let authState = searchParams.get("state");
@@ -65,18 +73,21 @@ function Auth(props: IProps) {
   
   return (
     <div className="Auth">
-        <header className="Auth-header">
-          Welcome to Teo's Ban Appeals
-        </header>
-        Log in <a className="twitch-logo" href={twitchUrl}><FontAwesomeIcon color="#6441A5" icon={faTwitch} /></a>
+        {!loggingIn && <div>
+          <header className="Auth-header">
+            Welcome to Teo's Ban Appeals
+          </header>
+          Log in <a className="twitch-logo" href={twitchUrl}><FontAwesomeIcon color="#6441A5" icon={faTwitch} /></a>
+        </div>}
+        <PulseLoader loading={!!loggingIn} color='#ffff00' cssOverride={override} size={20}/>
     </div>
   );
 };
 
 const mapStateToProps = (state: BanState) => {
   return { 
-    displayName: state.auth.displayName,
-    profilePicture: state.auth.profilePicture,
+    loggingIn: state.auth.loggingIn,
+    errorMessage: state.alert.errorMessage,
     accessToken: state.auth.accessToken
   }
 }
