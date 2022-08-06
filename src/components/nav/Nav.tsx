@@ -6,6 +6,7 @@ import { Dropdown, Image, Menu } from 'semantic-ui-react';
 import { logout } from '../auth/reducer';
 import { Dispatch } from 'redux';
 import { isUserAdmin } from '../../util/common';
+import { Link } from 'react-router-dom';
 
 interface IProps {
   displayName?: string;
@@ -17,7 +18,9 @@ interface IProps {
 function renderWelcome() {
   return (
     <Menu.Item className='nav-item'>
-      Teos Ban Appeals
+      <Link className="nav-link" to="/">
+        Teos Ban Appeals
+      </Link>
     </Menu.Item>
   );
 }
@@ -25,11 +28,12 @@ function renderWelcome() {
 function renderSubmit() {
   return (
     <Menu.Item
-        className='nav-item'
-        name='submitAppeal'
-        // onClick={() => }
-        >
+      className='nav-item'
+      name='submitAppeal'
+    >
+      <Link className="nav-link" to="/submitAppeal">
         Submit Appeal
+      </Link>
     </Menu.Item>
   );
 }
@@ -37,24 +41,28 @@ function renderSubmit() {
 function renderView() {
   return (
     <Menu.Item
-        className='nav-item'
-        name='viewAppeals'
-        // onClick={() => setActiveItem}
-        >
-        View Appeals
+      className='nav-item'
+      name='viewAppeals'
+    // onClick={() => setActiveItem}
+    >
+      View Appeals
     </Menu.Item>
   );
 }
 
 function renderRightButton(props: IProps) {
-  const {displayName, profilePicture, logout} = props;
+  const { displayName, profilePicture, logout } = props;
   return (
     <Menu.Menu position='right'>
       <Menu.Item className='user-section'>
-        <Image src={profilePicture} avatar className='profile-picture'/>
+        <Image src={profilePicture} avatar className='profile-picture' />
         <Dropdown className='nav-item' text={displayName}>
           <Dropdown.Menu>
-            <Dropdown.Item text='Logout' onClick={() => logout()}/>
+            <Dropdown.Item onClick={() => logout()}>
+              <Link className="nav-link" to="/">
+                Logout
+              </Link>
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </Menu.Item>
@@ -64,51 +72,51 @@ function renderRightButton(props: IProps) {
 
 function Nav(props: IProps) {
 
-  const {displayName, roles} = props;
+  const { displayName, roles } = props;
 
   const [activeItem, setActiveItem] = useState()
-  
+
   return (
     <div className="Nav">
-        {!displayName && <Menu>{renderWelcome()}</Menu>}
-        {displayName && !isUserAdmin(roles) && <div>
-          <Menu>
-            {renderSubmit()}
-            {renderView()}
-            {renderRightButton(props)}
-          </Menu>
-          </div>}
-          {displayName && isUserAdmin(roles) && <div>
-          <Menu>
-            {renderSubmit()}
-            {renderView()}
+      {!displayName && <Menu>{renderWelcome()}</Menu>}
+      {displayName && !isUserAdmin(roles) && <div>
+        <Menu>
+          {renderSubmit()}
+          {renderView()}
+          {renderRightButton(props)}
+        </Menu>
+      </div>}
+      {displayName && isUserAdmin(roles) && <div>
+        <Menu>
+          {renderSubmit()}
+          {renderView()}
 
-            <Menu.Item
-                className='nav-item'
-                name='submitEvidence'
-                onClick={() => setActiveItem}
-                >
-                Submit Evidence
-            </Menu.Item>
+          <Menu.Item
+            className='nav-item'
+            name='submitEvidence'
+            onClick={() => setActiveItem}
+          >
+            Submit Evidence
+          </Menu.Item>
 
-            <Menu.Item
-                className='nav-item'
-                name='submitJudgement'
-                active={activeItem === 'reviews'}
-                onClick={() => setActiveItem}
-                >
-                Submit Judgement
-            </Menu.Item>
+          <Menu.Item
+            className='nav-item'
+            name='submitJudgement'
+            active={activeItem === 'reviews'}
+            onClick={() => setActiveItem}
+          >
+            Submit Judgement
+          </Menu.Item>
 
-            {renderRightButton(props)}
-          </Menu>
-          </div>}
+          {renderRightButton(props)}
+        </Menu>
+      </div>}
     </div>
   );
 };
 
 const mapStateToProps = (state: BanState) => {
-  return { 
+  return {
     displayName: state.auth.displayName,
     profilePicture: state.auth.profilePicture,
     roles: state.auth.roles

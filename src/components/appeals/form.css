@@ -1,0 +1,18 @@
+.AppealForm {
+  width: 50%;
+  margin: auto;
+  min-height: 100vh;
+}
+
+.field > label {
+  color: yellow !important;
+  font-size: x-large !important;
+}
+
+.ban-type.active {
+  background-color: green !important;
+}
+
+.ui.form textarea {
+  height: 9em !important;
+}

@@ -3,18 +3,16 @@ import * as ReactDOMClient from 'react-dom/client';
 import './index.css';
 import App from './components/App';
 import {
-    BrowserRouter,
-    Routes,
-    Route,
-  } from "react-router-dom";
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import {store} from "./redux/store";
-
-const styleLink = document.createElement("link");
-styleLink.rel = "stylesheet";
-styleLink.href = "https://cdn.jsdelivr.net/npm/semantic-ui/dist/semantic.min.css";
-document.head.appendChild(styleLink);
+import { store } from "./redux/store";
+import Nav from './components/nav/Nav';
+import Alert from './components/alert/Alert';
+import AppealForm from './components/appeals/AppealForm';
 
 const container = document.getElementById('root') as HTMLElement;
 
@@ -22,16 +20,19 @@ const container = document.getElementById('root') as HTMLElement;
 const root = ReactDOMClient.createRoot(container);
 
 root.render(
-    <React.StrictMode>
-        <Provider store={store}>
-            <BrowserRouter>
-                <Routes>
-                <Route path="/" element={<App />} />
-                <Route path="/redirect" element={<App />} />
-                </Routes>
-            </BrowserRouter>
-        </Provider>
-    </React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Nav />
+        <Alert />
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/submitAppeal" element={<AppealForm />} />
+          <Route path="/redirect" element={<App />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

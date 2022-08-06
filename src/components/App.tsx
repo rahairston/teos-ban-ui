@@ -2,8 +2,6 @@ import './App.css';
 import { connect } from 'react-redux';
 import Auth from './auth/Auth';
 import { BanState } from '../redux/state';
-import Nav from './nav/Nav';
-import Alert from './alert/Alert';
 
 interface IProps {
   displayName?: string;
@@ -17,8 +15,6 @@ function App(props: IProps) {
   
   return (
     <div className="App">
-        <Nav />
-        <Alert />
         <header className="App-header">
         {!accessToken && <Auth />}
         </header>

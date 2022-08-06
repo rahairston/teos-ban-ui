@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import authReducer from '../components/auth/reducer';
 import alertReducer from '../components/alert/reducer';
+import appealReducer from '../components/appeals/reducer';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    alert: alertReducer
+    alert: alertReducer,
+    appeal: appealReducer
   },
 });
 
