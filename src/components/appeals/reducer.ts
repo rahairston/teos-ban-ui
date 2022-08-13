@@ -52,12 +52,13 @@ export const appealReducer = createSlice({
 export const submit = (request: AppealRequest) => (dispatch: Dispatch) => {
   dispatch(loadingStart());
   submitAppeal(request).then((location: string) => {
-    window.history.pushState(null, "Ban", location);
+    window.history.pushState(null, "Ban", `/appeals/${location}`);
+    // create success with link to new appeal instead of above
     dispatch(submitComplete());
   }).catch((err: ErrorResponseWrapper) => {
       dispatch(submitOrLoadError());
       const {response} = err;
-      const header = "Unable to Login."
+      const header = "Unable to submit appeal."
       if (response.status === 500) {
         dispatch(error({
           header,

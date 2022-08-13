@@ -1,6 +1,3 @@
-import axios from "axios";
-import BuildUrl from "build-url";
-import {OAUTH_STATE_KEY} from "../../constants";
 import { axiosInstance } from "../../util/axios";
 
 export interface AppealResponse {
@@ -23,9 +20,9 @@ export interface AppealRequest {
   banReason: string;
   banJustified: boolean;
   appealReason: string;
-  additionalNotes: string;
+  additionalNotes?: string;
   previousAppealId: string;
-  additionalData: string;
+  additionalData?: string;
 }
 
 const basePath = "/appeals"

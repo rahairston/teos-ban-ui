@@ -16,3 +16,11 @@
 .ui.form textarea {
   height: 9em !important;
 }
+
+.field > label.error, small.error{
+  color: red !important;
+}
+
+small.error {
+  font-size: 110%;
+}
