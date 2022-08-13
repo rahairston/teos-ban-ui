@@ -7,6 +7,8 @@ const initialState: AlertState = {
   infoMessage: undefined,
   success: undefined,
   successHeader: undefined,
+  successLink: undefined,
+  successLinkText: undefined,
   successMessage: undefined,
   error: undefined,
   errorHeader: undefined,
@@ -16,6 +18,8 @@ const initialState: AlertState = {
 export interface AlertPayload {
   header: string;
   message: string;
+  link?: string;
+  linkText?: string;
 }
 
 export const alertReducer = createSlice({
@@ -47,11 +51,15 @@ export const alertReducer = createSlice({
       state.success = true;
       state.successHeader = action.payload.header;
       state.successMessage = action.payload.message;
+      state.successLink = action.payload.link;
+      state.successLinkText = action.payload.linkText;
     },
     clearSuccess: (state) => {
       state.success = false;
       state.successHeader = undefined;
       state.successMessage = undefined;
+      state.successLink = undefined;
+      state.successLinkText = undefined;
     },
   }
 });

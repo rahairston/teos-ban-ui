@@ -4,6 +4,8 @@ export interface AlertState {
     infoMessage?: string;
     success?: boolean;
     successHeader?: string;
+    successLink?: string;
+    successLinkText?: string;
     successMessage?: string;
     error?: boolean;
     errorHeader?: string;

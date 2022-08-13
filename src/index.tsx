@@ -9,10 +9,11 @@ import {
 } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import { store } from "./redux/store";
+import { persistor, store } from "./redux/store";
 import Nav from './components/nav/Nav';
 import Alert from './components/alert/Alert';
 import AppealForm from './components/appeals/AppealForm';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const container = document.getElementById('root') as HTMLElement;
 
@@ -22,15 +23,17 @@ const root = ReactDOMClient.createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <Nav />
-        <Alert />
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/submitAppeal" element={<AppealForm />} />
-          <Route path="/redirect" element={<App />} />
-        </Routes>
-      </BrowserRouter>
+      <PersistGate persistor={persistor}>
+        <BrowserRouter>
+          <Nav />
+          <Alert />
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/submitAppeal" element={<AppealForm />} />
+            <Route path="/redirect" element={<App />} />
+          </Routes>
+        </BrowserRouter>
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );

@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { Dispatch } from 'redux';
 import { AppealState } from './state';
 import { ErrorResponseWrapper } from '../../constants';
-import { error } from '../alert/reducer';
+import { error, success } from '../alert/reducer';
 
 const initialState: AppealState = {
   appealId: undefined,
@@ -52,8 +52,12 @@ export const appealReducer = createSlice({
 export const submit = (request: AppealRequest) => (dispatch: Dispatch) => {
   dispatch(loadingStart());
   submitAppeal(request).then((location: string) => {
-    window.history.pushState(null, "Ban", `/appeals/${location}`);
-    // create success with link to new appeal instead of above
+    dispatch(success({
+      header: "Created Appeal",
+      message: "You can view it ",
+      link: `/appeals/${location}`,
+      linkText: "here"
+    }))
     dispatch(submitComplete());
   }).catch((err: ErrorResponseWrapper) => {
       dispatch(submitOrLoadError());

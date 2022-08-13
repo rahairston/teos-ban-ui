@@ -31,7 +31,7 @@ enum BanType {
 
 const validateSubmit = (data: AppealRequest, twitchUsername: string, roles: string[], setErrors: any, submit: (request: AppealRequest) => void) => {
   const err: IErrors = {};
-  if (isUserAdmin(roles) && data.twitchUsername !== twitchUsername) {
+  if (!isUserAdmin(roles) && data.twitchUsername !== twitchUsername) {
     err.twitchUsername = "Twitch username does not match input name";
   }
 

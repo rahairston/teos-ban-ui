@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
 import { Dispatch } from 'redux';
 import { clearError, clearInfo, clearSuccess } from "./reducer";
+import { Link } from 'react-router-dom';
 
 interface IProps {
   clearInfo: () => void;
@@ -14,17 +15,22 @@ interface IProps {
   infoMessage?: string;
   success?: boolean;
   successHeader?: string;
+  successLink?: string;
+  successLinkText?: string;
   successMessage?: string;
   error?: boolean;
   errorHeader?: string;
   errorMessage?: string;
 }
 
-const genericAlert = (info: boolean, error: boolean, success: boolean, header: string, message: string | undefined, onClick: () => void) => {
+const genericAlert = (info: boolean, error: boolean, success: boolean, 
+  header: string, message: string | undefined, link: string | undefined, linkText: string | undefined ,onClick: () => void) => {
   return (
     <Message className="alert-message" info={info} negative={error} success={success} onClick={() => onClick()}>
       <Message.Header>{header}</Message.Header>
-      <Message.Content>{message}</Message.Content>
+      <Message.Content>
+        {message} {!!link && <Link to={link}>{linkText}</Link>}
+      </Message.Content>
     </Message>
   );
 }
@@ -33,14 +39,14 @@ function Alert(props: IProps) {
   const { clearInfo, clearError, clearSuccess, 
     info, infoHeader, infoMessage, 
     error, errorHeader, errorMessage, 
-    success, successHeader, successMessage } = props;
+    success, successHeader, successLink, successLinkText, successMessage } = props;
 
   return (
     <div className="Alert">
       <div className='Alert-body'>
-        {info && genericAlert(true, false, false, `Info: ${infoHeader}`, infoMessage, clearInfo)}
-        {error && genericAlert(false, true, false, `Error: ${errorHeader}`, errorMessage, clearError)}
-        {success && genericAlert(false, false, true, `Success: ${successHeader}`, successMessage, clearSuccess)}
+        {info && genericAlert(true, false, false, `Info: ${infoHeader}`, infoMessage, undefined, undefined, clearInfo)}
+        {error && genericAlert(false, true, false, `Error: ${errorHeader}`, errorMessage, undefined, undefined, clearError)}
+        {success && genericAlert(false, false, true, `Success: ${successHeader}`, successMessage, successLink, successLinkText, clearSuccess)}
       </div>
     </div>
   );
@@ -57,7 +63,9 @@ const mapStateToProps = (state: BanState) => {
     errorMessage: alert.errorMessage,
     success: alert.success,
     successHeader: alert.successHeader,
-    successMessage: alert.successMessage
+    successMessage: alert.successMessage,
+    successLink: alert.successLink,
+    successLinkText: alert.successLinkText,
   }
 }
 
