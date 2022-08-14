@@ -1,7 +1,10 @@
 .AppealForm {
-  width: 50%;
+  background-color: #565656;
+  border-radius: 2%;
+  width: 52%;
   margin: auto;
-  min-height: 100vh;
+  padding: 1%;
+  min-height: auto;
 }
 
 .field > label {
@@ -18,7 +21,7 @@
 }
 
 .field > label.error, small.error{
-  color: red !important;
+  color: #000 !important;
 }
 
 small.error {

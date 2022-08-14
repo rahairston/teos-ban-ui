@@ -1,17 +1,44 @@
+.Appeal {
+  width: 52%;
+  margin: auto;
+  min-height: auto;
+}
+
+.view-form {
+  background-color: #565656;
+  border-radius: 2%;
+  padding: 1%;
+}
+
 .ui.label.view {
   width: 100%;
-  font-size: medium;
+  font-size: large;
+  color: black;
   font-weight: inherit;
   margin-left: 0px;
-  color: green;
-  background-color: transparent;
 }
 
-.ban-type.view {
-  opacity: 100% !important;
+.ban-type.view, .ban-just.view {
+  cursor: inherit;
+  color: rgba(0,0,0,.8);
 }
 
-.name-view {
+.ban-type.view:hover, .ban-type.view:active, .ban-type.view:focus,
+ .ban-just.view:hover, .ban-just.view:active, .ban-just.view:focus {
+  background: #e0e1e2 none !important;
+}
+
+.name-view, .name-view>input {
   opacity: 100% !important;
-  color: black;
+  border-bottom-right-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.unhide-button {
+  border-bottom-left-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+}
+
+.unhide-icon {
+  margin: 0px !important;
 }

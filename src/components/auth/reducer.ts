@@ -5,6 +5,7 @@ import { AuthState } from './state';
 import { axiosInstance } from '../../util/axios';
 import { ErrorResponseWrapper } from '../../constants';
 import { clearAllAlerts, error } from '../alert/reducer';
+import { clearAppeals } from '../appeals/reducer';
 
 const initialState: AuthState = {
   accessToken: undefined,
@@ -49,7 +50,7 @@ export const authReducer = createSlice({
       return initialState;
     },
     refreshSuccessful: (state, action: PayloadAction<TokenResponse>) => {
-      state.expiresAt = Math.floor(Date.now() / 1000) + action.payload.expiresIn
+      state.expiresAt = Math.floor(Date.now() / 1000) + action.payload.expiresIn;
       if (action.payload.accessToken) {
         state.accessToken = action.payload.accessToken;
       }
@@ -60,27 +61,36 @@ export const authReducer = createSlice({
   }
 });
 
-const TokenShared = (data: TokenResponse, isRefresh: boolean) => (dispatch: Dispatch) => {
+export const TokenShared = (data: TokenResponse) => (dispatch: Dispatch) => {
   axiosInstance.interceptors.request.use(config => {
     if (config && config.headers) {
       config.headers.Authorization = `Bearer ${data.accessToken}`;
     }
     return config;
-  })
+  });
+  axiosInstance.interceptors.response.use(response => {
+      return response;
+  }, error => {
+    if (error.response.status === 401) {
+      LogoutAction(dispatch);
+      dispatch(error({
+        header: "Token Expired",
+        message: "Please log in again."
+      }));
+    }
+    return error;
+  });
+  
   timeoutId = setTimeout(() => {
     RefreshAction(data.refreshToken)(dispatch);
   }, data.expiresIn * 1000);
-  if (isRefresh) {
-    dispatch(refreshSuccessful(data));
-  } else {
-    dispatch(loginSuccessful(data));
-  }
 }
 
 export const LoginAction = (authCode: string) => (dispatch: Dispatch) => {
   dispatch(loginStart());
   fetchToken(authCode).then((data: TokenResponse) => {
-    TokenShared(data, false)(dispatch);
+    TokenShared(data)(dispatch);
+    dispatch(loginSuccessful(data));
   }).catch((err: ErrorResponseWrapper) => {
     dispatch(loginError())
     const {response} = err;
@@ -101,7 +111,8 @@ export const LoginAction = (authCode: string) => (dispatch: Dispatch) => {
 
 export const RefreshAction = (token: string) => (dispatch: Dispatch) => {
   refreshToken(token).then((data: TokenResponse) => {
-    TokenShared(data, true)(dispatch);
+    TokenShared(data)(dispatch);
+    dispatch(refreshSuccessful(data));
   }).catch((err: any) => {
     dispatch(loginError())
     const {response} = err;
@@ -122,6 +133,7 @@ export const RefreshAction = (token: string) => (dispatch: Dispatch) => {
 
 export const LogoutAction = (dispatch: Dispatch) => {
   dispatch(clearAllAlerts());
+  dispatch(clearAppeals())
   dispatch(logout())
 }
 

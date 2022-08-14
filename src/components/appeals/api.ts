@@ -5,6 +5,11 @@ export enum BanType {
   DISCORD = "DISCORD",
   BOTH = "BOTH"
 }
+
+export interface JudgementResponse {
+  judgementId?: string;
+  status?: string;
+}
 export interface AppealResponse {
     appealId: string;
     twitchUsername: string;
@@ -16,6 +21,7 @@ export interface AppealResponse {
     additionalNotes?: string;
     previousAppealId?: string;
     additionalData?: string;
+    judgement?: JudgementResponse;
 }
 
 export interface AppealRequest {

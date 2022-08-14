@@ -9,6 +9,7 @@ export interface AppealState {
     additionalNotes?: string;
     previousAppealId?: string;
     additionalData?: string;
+    judgement?: any; // todo
     isLoading: boolean;
     isSubmitting: boolean;
 

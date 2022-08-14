@@ -2,11 +2,23 @@ import { createTransform } from 'redux-persist';
 import { axiosInstance } from '../util/axios';
 
 const SetTransform = createTransform(
-  // set accessToken interceptor on a refresh
   (inboundState: any, key) => {
     if (key === 'auth') {
-      const {accessToken, expiresAt} = inboundState;
-      if (Math.floor(Date.now() / 1000) >= expiresAt) { // Don't rehydrate expired auth
+      const {expiresAt} = inboundState;
+      if (Math.floor(Date.now() / 1000) >= expiresAt - 10) { // Don't rehydrate expired auth
+        return {};
+      } else {
+        return inboundState;
+      }
+    } else {
+      return inboundState;
+    }
+  },
+  // transform state being rehydrated
+  (outboundState: any, key) => {
+    if (key === 'auth') {
+      const {accessToken, expiresAt} = outboundState;
+      if (Math.floor(Date.now() / 1000) >= expiresAt - 10) { // Don't rehydrate expired auth
         return {};
       } else {
         if (!!accessToken) {
@@ -17,20 +29,16 @@ const SetTransform = createTransform(
             return config;
           });
         }
-        return inboundState;
+        return outboundState;
       }
-    } else if (key === 'alert') {
+    } else if (key === 'alert' || key === 'appeal') {
       return {};
     } else {
-      return inboundState;
+      return outboundState;
     }
   },
-  // transform state being rehydrated
-  (outboundState: any, key) => {
-    return outboundState;
-  },
   // define which reducers this transform gets called for.
-  { whitelist: ['auth', 'alert'] }
+  {}
 );
 
 export default SetTransform;

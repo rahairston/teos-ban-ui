@@ -97,7 +97,7 @@ function AppealForm(props: IProps) {
           />
         </Form.Field>
         <Form.Field>
-          <label>Ban Type</label>
+          <label>Where were you banned?</label>
           <Button.Group>
             <Button className="ban-type" active={banType===BanType.TWITCH} onClick={() => setBanType(BanType.TWITCH)}>
               Twitch

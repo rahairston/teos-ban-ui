@@ -10,7 +10,7 @@ import { faTwitch } from '@fortawesome/free-brands-svg-icons';
 import { clientId, redirectUri, OAUTH_STATE_KEY } from "../../constants";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PulseLoader } from 'react-spinners';
-import { CSSProperties } from 'react';
+import { loaderOverride } from '../../util/common';
 
 interface IProps {
     login: (authCode: string) => void;
@@ -30,12 +30,6 @@ const generateState = () => {
 	const randomState = String.fromCharCode.apply(null, numbers);
   sessionStorage.setItem(OAUTH_STATE_KEY, randomState);
 	return randomState;
-};
-
-const override: CSSProperties = {
-  display: "block",
-  margin: "30vh 0 50px 0",
-  borderColor: "red"
 };
 
 function Auth(props: IProps) {
@@ -79,7 +73,7 @@ function Auth(props: IProps) {
           </header>
           Log in <a className="twitch-logo" href={twitchUrl}><FontAwesomeIcon color="#6441A5" icon={faTwitch} /></a>
         </div>}
-        <PulseLoader loading={!!loggingIn} color='#ffff00' cssOverride={override} size={20}/>
+        <PulseLoader loading={!!loggingIn} color='#ffff00' cssOverride={loaderOverride} size={20}/>
     </div>
   );
 };
