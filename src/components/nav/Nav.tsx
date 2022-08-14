@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
 import { Dropdown, Image, Menu } from 'semantic-ui-react';
-import { logout } from '../auth/reducer';
+import { LogoutAction } from '../auth/reducer';
 import { Dispatch } from 'redux';
 import { isUserAdmin } from '../../util/common';
 import { Link } from 'react-router-dom';
@@ -58,11 +58,11 @@ function renderRightButton(props: IProps) {
         <Image src={profilePicture} avatar className='profile-picture' />
         <Dropdown className='nav-item' text={displayName}>
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => logout()}>
-              <Link className="nav-link" to="/">
+            <Link className="nav-link" to="/">
+              <Dropdown.Item onClick={() => logout()}>
                 Logout
-              </Link>
-            </Dropdown.Item>
+              </Dropdown.Item>
+            </Link>
           </Dropdown.Menu>
         </Dropdown>
       </Menu.Item>
@@ -125,7 +125,7 @@ const mapStateToProps = (state: BanState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    logout: () => dispatch(logout())
+    logout: () => LogoutAction(dispatch)
   }
 }
 

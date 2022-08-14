@@ -4,11 +4,14 @@ import alertReducer from '../components/alert/reducer';
 import appealReducer from '../components/appeals/reducer';
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
+import thunk from 'redux-thunk';
+import SetTransform from './transform';
 
 
 const persistConfig = {
   key: 'root',
   storage,
+  transforms: [SetTransform]
 }
 
 const rootReducer = combineReducers({
@@ -21,6 +24,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
   reducer: persistedReducer,
+  middleware: [thunk]
 });
 
 export const persistor = persistStore(store)

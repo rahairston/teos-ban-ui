@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppealRequest, AppealResponse, submitAppeal} from './api';
+import { AppealRequest, AppealResponse, submitAppeal, getAppeal} from './api';
 import * as _ from 'lodash';
 import { Dispatch } from 'redux';
 import { AppealState } from './state';
@@ -50,7 +50,7 @@ export const appealReducer = createSlice({
 });
 
 export const submit = (request: AppealRequest) => (dispatch: Dispatch) => {
-  dispatch(loadingStart());
+  dispatch(submitStart());
   submitAppeal(request).then((location: string) => {
     dispatch(success({
       header: "Created Appeal",
@@ -60,21 +60,43 @@ export const submit = (request: AppealRequest) => (dispatch: Dispatch) => {
     }))
     dispatch(submitComplete());
   }).catch((err: ErrorResponseWrapper) => {
-      dispatch(submitOrLoadError());
-      const {response} = err;
-      const header = "Unable to submit appeal."
-      if (response.status === 500) {
-        dispatch(error({
-          header,
-          message: "Internal Server Error"
-        }));
-      } else {
-        dispatch(error({
-          header,
-          message: response.data.message
-        }));
-      }
-    });
+    dispatch(submitOrLoadError());
+    const {response} = err;
+    const header = "Unable to submit appeal."
+    if (response.status === 500) {
+      dispatch(error({
+        header,
+        message: "Internal Server Error"
+      }));
+    } else {
+      dispatch(error({
+        header,
+        message: response.data.message
+      }));
+    }
+  });
+}
+
+export const load = (appealId: string) => (dispatch: Dispatch) => {
+  dispatch(loadingStart());
+  getAppeal(appealId).then((data: AppealResponse) => {
+    dispatch(loadingComplete(data));
+  }).catch((err: ErrorResponseWrapper) => {
+    dispatch(submitOrLoadError());
+    const {response} = err;
+    const header = `Unable to get appeal with ID ${appealId}`
+    if (response.status === 500) {
+      dispatch(error({
+        header,
+        message: "Internal Server Error"
+      }));
+    } else {
+      dispatch(error({
+        header,
+        message: response.data.message
+      }));
+    }
+  });
 }
 
 export const { clear, submitStart, submitComplete, loadingStart, loadingComplete, submitOrLoadError } = appealReducer.actions;

@@ -5,7 +5,7 @@ import { BanState } from '../../redux/state';
 import { Button, Form } from 'semantic-ui-react';
 import { Dispatch } from 'redux';
 import { isUserAdmin } from '../../util/common';
-import { AppealRequest } from './api';
+import { AppealRequest, BanType } from './api';
 import { submit } from './reducer';
 
 interface IProps {
@@ -21,12 +21,6 @@ interface IErrors {
   discordUsername?: string;
   banReason?: string;
   appealReason?: string;
-}
-
-enum BanType {
-  TWITCH,
-  DISCORD,
-  BOTH
 }
 
 const validateSubmit = (data: AppealRequest, twitchUsername: string, roles: string[], setErrors: any, submit: (request: AppealRequest) => void) => {

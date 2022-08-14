@@ -4,11 +4,12 @@ import { Dispatch } from 'redux';
 import { AuthState } from './state';
 import { axiosInstance } from '../../util/axios';
 import { ErrorResponseWrapper } from '../../constants';
-import { error } from '../alert/reducer';
+import { clearAllAlerts, error } from '../alert/reducer';
 
 const initialState: AuthState = {
   accessToken: undefined,
   refreshToken: undefined,
+  expiresAt: undefined,
   email: undefined,
   displayName: undefined,
   profilePicture: undefined,
@@ -39,6 +40,7 @@ export const authReducer = createSlice({
       }
       state.roles = action.payload.roles;
       state.email = action.payload.email;
+      state.expiresAt = Math.floor(Date.now() / 1000) + action.payload.expiresIn
       state.displayName = action.payload.displayName;
       state.profilePicture = action.payload.profileImageUrl;
     },
@@ -47,6 +49,7 @@ export const authReducer = createSlice({
       return initialState;
     },
     refreshSuccessful: (state, action: PayloadAction<TokenResponse>) => {
+      state.expiresAt = Math.floor(Date.now() / 1000) + action.payload.expiresIn
       if (action.payload.accessToken) {
         state.accessToken = action.payload.accessToken;
       }
@@ -98,7 +101,6 @@ export const LoginAction = (authCode: string) => (dispatch: Dispatch) => {
 
 export const RefreshAction = (token: string) => (dispatch: Dispatch) => {
   refreshToken(token).then((data: TokenResponse) => {
-    console.log(data);
     TokenShared(data, true)(dispatch);
   }).catch((err: any) => {
     dispatch(loginError())
@@ -115,7 +117,12 @@ export const RefreshAction = (token: string) => (dispatch: Dispatch) => {
         message: response.data.message
       }));
     }
-  });;
+  });
+}
+
+export const LogoutAction = (dispatch: Dispatch) => {
+  dispatch(clearAllAlerts());
+  dispatch(logout())
 }
 
 export const { loginError, loginStart, loginSuccessful, logout, refreshSuccessful } = authReducer.actions;

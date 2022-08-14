@@ -61,9 +61,12 @@ export const alertReducer = createSlice({
       state.successLink = undefined;
       state.successLinkText = undefined;
     },
+    clearAllAlerts: () => {
+      return initialState;
+    }
   }
 });
 
-export const { info, clearInfo, error, clearError, success, clearSuccess } = alertReducer.actions;
+export const { info, clearInfo, error, clearError, success, clearSuccess, clearAllAlerts } = alertReducer.actions;
 
 export default alertReducer.reducer;

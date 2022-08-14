@@ -1,0 +1,17 @@
+.ui.label.view {
+  width: 100%;
+  font-size: medium;
+  font-weight: inherit;
+  margin-left: 0px;
+  color: green;
+  background-color: transparent;
+}
+
+.ban-type.view {
+  opacity: 100% !important;
+}
+
+.name-view {
+  opacity: 100% !important;
+  color: black;
+}

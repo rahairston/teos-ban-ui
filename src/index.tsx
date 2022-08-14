@@ -14,6 +14,7 @@ import Nav from './components/nav/Nav';
 import Alert from './components/alert/Alert';
 import AppealForm from './components/appeals/AppealForm';
 import { PersistGate } from 'redux-persist/integration/react';
+import AppealView from './components/appeals/AppealView';
 
 const container = document.getElementById('root') as HTMLElement;
 
@@ -30,6 +31,7 @@ root.render(
           <Routes>
             <Route path="/" element={<App />} />
             <Route path="/submitAppeal" element={<AppealForm />} />
+            <Route path="/appeals/:id" element={<AppealView />} />
             <Route path="/redirect" element={<App />} />
           </Routes>
         </BrowserRouter>

@@ -1,5 +1,10 @@
 import { axiosInstance } from "../../util/axios";
 
+export enum BanType {
+  TWITCH = "TWITCH",
+  DISCORD = "DISCORD",
+  BOTH = "BOTH"
+}
 export interface AppealResponse {
     appealId: string;
     twitchUsername: string;
