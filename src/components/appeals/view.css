@@ -39,6 +39,28 @@
   border-top-left-radius: 0 !important;
 }
 
-.unhide-icon {
+.unhide-icon, .bottom-icons {
   margin: 0px !important;
+}
+
+.status-label {
+  float: right;
+}
+
+.admin-buttons {
+  width: 100%;
+}
+
+.admin-or {
+  height: inherit !important;
+}
+
+.hidden-text {
+  top: 30% !important;
+}
+
+.bottom-bar {
+  width: 33.333333333%;
+  display: inline-block;
+  vertical-align: middle;
 }

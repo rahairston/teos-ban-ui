@@ -1,17 +1,18 @@
 import './form.css';
 import './view.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
-import { Button, ButtonGroup, Form, Icon, Input, Label } from 'semantic-ui-react';
+import { Button, ButtonGroup, Form, Icon, Input, Label, SemanticCOLORS } from 'semantic-ui-react';
 import { Dispatch } from 'redux';
 import { isUserAdmin, loaderOverride } from '../../util/common';
-import { load } from './reducer';
+import { clearAppeal, load } from './reducer';
 import { useParams } from 'react-router-dom';
 import { BanType, JudgementResponse } from './api';
 import { PulseLoader } from 'react-spinners';
 interface IProps {
   load: (appealId: string) => void;
+  clear: () => void;
   accessToken?: string;
   appealId?: string;
   twitchUsername?: string;
@@ -26,20 +27,45 @@ interface IProps {
   judgement?: JudgementResponse;
   isLoading: boolean;
   error?: boolean;
+  roles?: string[];
+}
+
+const getColorByStatus = (judgementStatus: string | undefined): SemanticCOLORS => {
+  const status = judgementStatus ? judgementStatus.toUpperCase() : "";
+  switch (status) {
+    case "PENDING":
+    case "REVIEWING":
+      return "yellow";
+    case "UNBANNED":
+      return "green";
+    case "BAN UPHELD":
+      return "red";
+    default:
+      return "purple";
+  }
+}
+
+const isEditable = (judgementStatus: string | undefined): boolean => {
+  return !!judgementStatus && judgementStatus === "PENDING";
 }
 
 function Appeal(props: IProps) {
 
   const params = useParams();
 
-  const {accessToken, appealId, twitchUsername, discordUsername, banType, 
+  const {appealId, twitchUsername, discordUsername, banType, 
       banReason, banJustified, appealReason, additionalNotes, judgement,
-      previousAppealId, additionalData, isLoading, error} = props;
-
-
-  if (!error && params.id && !isLoading &&  params.id !== appealId && accessToken) {
-    props.load(params.id);
-  }
+      previousAppealId, additionalData, isLoading, load, clear, roles} = props;
+  
+  useEffect(() => {    
+    if (params.id) {
+      load(params.id);
+    }    
+    // Specify how to clean up after this effect:    
+    return function cleanup() {
+      clear();    
+    };  
+  }, [params.id, load, clear]);
 
   const [usernameVisible, setUsernameVisible] = useState(false);
 
@@ -85,25 +111,70 @@ function Appeal(props: IProps) {
           <label>Anything else you'd like to add?</label>
           <Label className='view'>{additionalNotes}</Label>
         </Form.Field>}
-        {judgement && <Form.Field>
-          <label>Status</label>
-          <Button className="ban-just view">
-            {judgement.status}
-          </Button>
-        </Form.Field>}
         <hr />
-        <ButtonGroup>
-          <Button 
-            type='submit' 
-            className="bottom-bar"
-            disabled={props.isLoading} 
-            onClick={() => setUsernameVisible(!usernameVisible)}
+        <div>
+          <div className="bottom-bar">
+            <Button 
+              type='submit' 
+              className="bottom-bar-button"
+              disabled={!isUserAdmin(roles) && !isEditable(judgement?.status)} 
+              onClick={() => setUsernameVisible(!usernameVisible)}
+              >
+                <Icon size="large" name="edit" className="bottom-icons" />
+            </Button>
+            <Button 
+              type='submit' 
+              className="bottom-bar-button"
+              disabled={!isUserAdmin(roles) && !isEditable(judgement?.status)}  
+              onClick={() => setUsernameVisible(!usernameVisible)}
+              >
+                <Icon size="large" name="trash" className="bottom-icons" />
+            </Button>
+          </div>
+          <div className="bottom-bar">
+          {isUserAdmin(roles) && <ButtonGroup className="admin-buttons">
+            <Button 
+              type='submit'
+              animated='fade'
+              className="bottom-bar-button"
+              onClick={() => setUsernameVisible(!usernameVisible)}
             >
-              Edit
-          </Button>
-          {judgement && <Button>Status: {judgement.status}
-            </Button>}
-        </ButtonGroup>
+              <Button.Content className="hidden-text" hidden>Upload{<br />}Evidence</Button.Content>
+              <Button.Content visible>
+                <Icon size="large" name="upload" className="bottom-icons" />
+              </Button.Content>
+            </Button>
+            <Button.Or className="admin-or" />
+            <Button 
+              type='submit'
+              animated='fade'
+              className="bottom-bar-button"
+              onClick={() => setUsernameVisible(!usernameVisible)}
+            >
+              <Button.Content className="hidden-text" hidden>Review{<br />}Evidence</Button.Content>
+              <Button.Content visible>
+                <Icon size="large" name="law" className="bottom-icons" />
+              </Button.Content>
+            </Button>
+            <Button.Or className="admin-or" />
+            <Button 
+              type='submit' 
+              animated='fade'
+              className="bottom-bar-button"
+              onClick={() => setUsernameVisible(!usernameVisible)}
+            >
+              <Button.Content className="hidden-text" hidden>Submit{<br />}Judgement</Button.Content>
+              <Button.Content visible>
+                <Icon size="large" name="legal" className="bottom-icons" />
+              </Button.Content>
+            </Button>
+          </ButtonGroup>}
+          </div>
+          <div className="bottom-bar">
+            {judgement && <Label color={getColorByStatus(judgement.status)} size="big" className="status-label">{judgement.status}
+              </Label>}
+          </div>
+        </div>
       </Form>}
     </div>
   );
@@ -131,7 +202,8 @@ const mapStateToProps = (state: BanState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    load: (appealId: string) => load(appealId)(dispatch)
+    load: (appealId: string) => load(appealId)(dispatch),
+    clear: () => dispatch(clearAppeal())
   }
 }
 

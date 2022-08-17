@@ -5,7 +5,7 @@ import { AuthState } from './state';
 import { axiosInstance } from '../../util/axios';
 import { ErrorResponseWrapper } from '../../constants';
 import { clearAllAlerts, error } from '../alert/reducer';
-import { clearAppeals } from '../appeals/reducer';
+import { clearAppeal } from '../appeals/reducer';
 
 const initialState: AuthState = {
   accessToken: undefined,
@@ -17,6 +17,9 @@ const initialState: AuthState = {
   roles: undefined,
   loggingIn: false
 };
+
+// Cookie expires in 30 minutes so we refresh token on 29
+const refreshTimeout = 29 * 60 * 1000;
 
 let timeoutId: NodeJS.Timeout | undefined = undefined;
 
@@ -83,7 +86,7 @@ export const TokenShared = (data: TokenResponse) => (dispatch: Dispatch) => {
   
   timeoutId = setTimeout(() => {
     RefreshAction(data.refreshToken)(dispatch);
-  }, data.expiresIn * 1000);
+  }, refreshTimeout);
 }
 
 export const LoginAction = (authCode: string) => (dispatch: Dispatch) => {
@@ -133,7 +136,7 @@ export const RefreshAction = (token: string) => (dispatch: Dispatch) => {
 
 export const LogoutAction = (dispatch: Dispatch) => {
   dispatch(clearAllAlerts());
-  dispatch(clearAppeals())
+  dispatch(clearAppeal())
   dispatch(logout())
 }
 

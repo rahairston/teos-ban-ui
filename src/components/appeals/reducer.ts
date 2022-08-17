@@ -26,7 +26,7 @@ export const appealReducer = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    clearAppeals: () => {
+    clearAppeal: () => {
       return initialState;
     },
     submitStart: (state) => {
@@ -85,15 +85,10 @@ export const load = (appealId: string) => (dispatch: Dispatch) => {
     dispatch(submitOrLoadError());
     const {response} = err;
     const header = `Unable to get appeal with ID ${appealId}`
-    if (response && response.status === 500) {
+    if (response.status === 500) {
       dispatch(error({
         header,
         message: "Internal Server Error"
-      }));
-    } else if (response) {
-      dispatch(error({
-        header,
-        message: response.data.message
       }));
     } else {
       dispatch(error({
@@ -104,6 +99,6 @@ export const load = (appealId: string) => (dispatch: Dispatch) => {
   });
 }
 
-export const { clearAppeals, submitStart, submitComplete, loadingStart, loadingComplete, submitOrLoadError } = appealReducer.actions;
+export const { clearAppeal, submitStart, submitComplete, loadingStart, loadingComplete, submitOrLoadError } = appealReducer.actions;
 
 export default appealReducer.reducer;
