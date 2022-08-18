@@ -6,7 +6,6 @@ import { useSearchParams } from "react-router-dom";
 import { LoginAction } from './reducer';
 import BuildUrl from 'build-url';
 import { faTwitch } from '@fortawesome/free-brands-svg-icons';
-
 import { clientId, redirectUri, OAUTH_STATE_KEY } from "../../constants";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PulseLoader } from 'react-spinners';

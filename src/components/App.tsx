@@ -6,12 +6,13 @@ import { BanState } from '../redux/state';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Nav from './nav/Nav';
 import Alert from './alert/Alert';
-import AppealForm from './appeals/AppealForm';
-import AppealView from './appeals/AppealView';
+import AppealForm from './appeal/AppealForm';
+import AppealView from './appeal/AppealView';
 import Redirect from './redirect/redirect';
 import { useEffect } from 'react';
 import { TokenResponse } from './auth/api';
 import { TokenShared } from './auth/reducer';
+import AppealsList from './appeals/AppealsList';
 
 interface IProps {
   displayName?: string;
@@ -58,6 +59,7 @@ function App(props: IProps) {
         <Routes>
           <Route path="/" element={<div></div>} />
           <Route path="/submitAppeal" element={<AppealForm />} />
+          <Route path="/appeals" element={<AppealsList />} />
           <Route path="/appeals/:id" element={<AppealView />} />
           <Route path="/redirect" element={<Redirect />} />
         </Routes>

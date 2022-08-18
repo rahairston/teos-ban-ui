@@ -1,11 +1,12 @@
 import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit';
 import authReducer from '../components/auth/reducer';
 import alertReducer from '../components/alert/reducer';
-import appealReducer from '../components/appeals/reducer';
+import appealReducer from '../components/appeal/reducer';
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
 import thunk from 'redux-thunk';
 import SetTransform from './transform';
+import appealsReducer from '../components/appeals/reducer';
 
 
 const persistConfig = {
@@ -17,7 +18,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   alert: alertReducer,
-  appeal: appealReducer
+  appeal: appealReducer,
+  appeals: appealsReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

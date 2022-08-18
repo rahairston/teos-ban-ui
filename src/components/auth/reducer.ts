@@ -5,7 +5,7 @@ import { AuthState } from './state';
 import { axiosInstance } from '../../util/axios';
 import { ErrorResponseWrapper } from '../../constants';
 import { clearAllAlerts, error } from '../alert/reducer';
-import { clearAppeal } from '../appeals/reducer';
+import { clearAppeal } from '../appeal/reducer';
 
 const initialState: AuthState = {
   accessToken: undefined,

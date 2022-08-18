@@ -1,0 +1,18 @@
+.AppealsList {
+  width: 75%;
+  margin: auto;
+  min-height: auto;
+}
+
+.table-header, .table-row {
+  font-size: xx-large;
+}
+
+.display-count {
+  float: right;
+  font-size: xx-large !important;
+}
+
+.display-item {
+  font-size: xx-large !important;
+}

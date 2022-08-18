@@ -43,9 +43,10 @@ function renderView() {
     <Menu.Item
       className='nav-item'
       name='viewAppeals'
-    // onClick={() => setActiveItem}
     >
-      View Appeals
+      <Link className="nav-link" to="/appeals">
+        View Appeals
+      </Link>
     </Menu.Item>
   );
 }
