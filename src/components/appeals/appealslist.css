@@ -1,18 +1,56 @@
 .AppealsList {
-  width: 75%;
+  width: 60%;
   margin: auto;
   min-height: auto;
+  background-color: #565656;
+  border-radius: 2%;
+  padding: 1%;
 }
 
-.table-header, .table-row {
-  font-size: xx-large;
+.appeals-grid {
+  background-color: #565656;
+  border-radius: 2%;
+  padding: 1%;
+}
+
+.grid-header {
+  font-size:  xx-large;
+  margin: auto !important;
+  color: yellow;
+}
+
+.grid-footer {
+  font-size: large;
+  margin: auto !important;
+  color: yellow;
 }
 
 .display-count {
   float: right;
+  color: yellow;
   font-size: xx-large !important;
 }
 
 .display-item {
-  font-size: xx-large !important;
+  display: inline-block;
+  text-align: center;
+  font-size: xx-large;
+  color: black;
+}
+
+.grid-item {
+  height: 100px !important;
+  display: inline-block;
+  text-align: center;
+  font-size: xx-large;
+  color: black;
+}
+
+.grid-item .meta {
+  font-size: large !important;
+  padding-top: 10px;
+}
+
+.appeal-column {
+  min-height: 120px;
 }

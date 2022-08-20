@@ -2,9 +2,9 @@ import './appealslist.css'
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
-import { Dropdown, Icon, Label, Menu, Table } from 'semantic-ui-react';
+import { Card, Dropdown, Grid, Icon, Menu, SemanticWIDTHS } from 'semantic-ui-react';
 import { Dispatch } from 'redux';
-import { isUserAdmin } from '../../util/common';
+import { getWindowDimensions, isUserAdmin } from '../../util/common';
 import { clearAppeals, load } from './reducer';
 import { AppealResponse } from '../appeal/api';
 import { AppealFilters } from './api';
@@ -17,6 +17,16 @@ interface IProps {
   isLoading: boolean;
   load: (filters: AppealFilters) => void;
   clear: () => void;
+}
+
+const getColumnCount = (innerWidth: number): SemanticWIDTHS => {
+  if (innerWidth > 1680)
+    return 5;
+  else if (innerWidth > 1346) {
+    return 4;
+  } else {
+    return 3;
+  }
 }
 
 const renderBottomNav = (currentPage: number, totalPages: number, setPageCount: (pageNum: number) => void) => {
@@ -48,56 +58,82 @@ function AppealsList(props: IProps) {
   const { appeals, totalSize, totalPages, load, clear } = props;
   const [pageCount, setPageCount] = useState(1);
   const [pageSize, setPageSize] = useState(1);
-  
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
   useEffect(() => {
     const filters: AppealFilters = {
       pageCount,
       pageSize
     };
     load(filters);
+
+    // return () => clear();
   }, [pageCount, pageSize, load, clear]);
+
+  const gridWidth = getColumnCount(windowDimensions.width);
 
   return (
     <div className="AppealsList">
-      <Table celled>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell className="table-header">Appeal Number</Table.HeaderCell>
-            <Table.HeaderCell className="table-header">Status
-              <Dropdown text={`${pageSize}`} className="display-count">
-                <Dropdown.Menu>
-                  <Dropdown.Item className="display-item" text="10" onClick={() => setPageSize(10)}/>
-                  <Dropdown.Item className="display-item" text="25" onClick={() => setPageSize(25)}/>
-                  <Dropdown.Item className="display-item" text="50" onClick={() => setPageSize(50)}/>
-                </Dropdown.Menu>
-              </Dropdown>
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
+      <Grid doubling>
+        <Grid.Row columns={3}>
+          <Grid.Column className="grid-header">
+              Ban Appeals
+          </Grid.Column>
+          <Grid.Column>
+            
+          </Grid.Column>
+          <Grid.Column>
+            <Dropdown text={`${pageSize}`} className="display-count">
+              <Dropdown.Menu>
+                <Dropdown.Item className="display-item" text="10" onClick={() => setPageSize(10)}/>
+                <Dropdown.Item className="display-item" text="25" onClick={() => setPageSize(25)}/>
+                <Dropdown.Item className="display-item" text="50" onClick={() => setPageSize(50)}/>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row columns={gridWidth} stretched>
           {appeals.map((appeal: AppealResponse, index: number) => {
-             return (<Table.Row className="table-row">
-              <Table.Cell>
-                <Link to={`/appeals/${appeal.appealId}`}>
-                  Appeal {(pageCount - 1) + index + 1}
+            return (
+              <Grid.Column className="appeal-column" key={appeal.appealId}>
+                <Link 
+                  className="grid-item" 
+                  key={appeal.appealId} 
+                  to={`/appeals/${appeal.appealId}`}
+                  state={{index: index}}
+                >
+                  <Card className="grid-item" key={appeal.appealId}>
+                    <Card.Content>
+                      Appeal {(pageCount - 1) + index + 1}
+                      <Card.Meta>
+                        {appeal.judgement && <span>{appeal.judgement.status}</span>}
+                      </Card.Meta>
+                    </Card.Content>
+                  </Card>
                 </Link>
-              </Table.Cell>
-              {appeal.judgement && <Table.Cell>{appeal.judgement.status}</Table.Cell>}
-            </Table.Row>);
+              </Grid.Column>
+            );
           })}
-        </Table.Body>
-
-        <Table.Footer>
-          <Table.Row>
-            <Table.HeaderCell colSpan='3'>
-              {renderBottomNav(pageCount, totalPages, setPageCount)}
-              <Label>Total Count: {totalSize}</Label>
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
-      </Table>
+        </Grid.Row>
+        <Grid.Row columns={3}>
+          <Grid.Column className="grid-footer">
+            Total Count: {totalSize}
+          </Grid.Column>
+          <Grid.Column />
+          <Grid.Column>
+            {renderBottomNav(pageCount, totalPages, setPageCount)}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     </div>
   );
 };

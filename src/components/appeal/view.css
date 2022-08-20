@@ -1,5 +1,5 @@
 .Appeal {
-  width: 52%;
+  width: 68%;
   margin: auto;
   min-height: auto;
 }
@@ -8,6 +8,12 @@
   background-color: #565656;
   border-radius: 2%;
   padding: 1%;
+}
+
+.grid-form-arrow-right, .grid-form-arrow-left {
+  color: yellow;
+  width: 100% !important;
+  cursor: pointer;
 }
 
 .ui.label.view {

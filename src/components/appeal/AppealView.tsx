@@ -3,16 +3,17 @@ import './view.css';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
-import { Button, ButtonGroup, Form, Icon, Input, Label, SemanticCOLORS } from 'semantic-ui-react';
+import { Button, ButtonGroup, Form, Grid, Icon, Input, Label, SemanticCOLORS } from 'semantic-ui-react';
 import { Dispatch } from 'redux';
 import { isUserAdmin, loaderOverride } from '../../util/common';
 import { clearAppeal, load } from './reducer';
-import { useParams } from 'react-router-dom';
-import { BanType, JudgementResponse } from './api';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import { AppealResponse, BanType, JudgementResponse } from './api';
 import { PulseLoader } from 'react-spinners';
 interface IProps {
   load: (appealId: string) => void;
   clear: () => void;
+  appeals: AppealResponse[];
   accessToken?: string;
   appealId?: string;
   twitchUsername?: string;
@@ -53,9 +54,13 @@ function Appeal(props: IProps) {
 
   const params = useParams();
 
-  const {appealId, twitchUsername, discordUsername, banType, 
+  const {appeals, appealId, twitchUsername, discordUsername, banType, 
       banReason, banJustified, appealReason, additionalNotes, judgement,
       previousAppealId, additionalData, isLoading, load, clear, roles} = props;
+
+  const location: any = useLocation()
+  const { index } = 
+    location.state ? location.state : {index: undefined};
   
   useEffect(() => {    
     if (params.id) {
@@ -72,110 +77,132 @@ function Appeal(props: IProps) {
   return (
     <div className="Appeal">
       <PulseLoader loading={!!isLoading} color='#ffff00' cssOverride={loaderOverride} size={20}/>
-      {appealId && !isLoading && <Form className="view-form">
-        <Form.Field>
-          <label>Twitch Username</label>
-          <Input className="name-view" icon={
-            <Button className="unhide-button" onClick={() => setUsernameVisible(!usernameVisible)}>
-              <Icon className="unhide-icon" name={usernameVisible ? "eye": "eye slash"} /></Button>
-            } 
-            onClick={() => setUsernameVisible(!usernameVisible)}
-            value={twitchUsername} disabled type={usernameVisible ? "text" : "password"}
-          />
-        </Form.Field>
-        {banType && <Form.Field>
-          <label>Where were you banned?</label>
-            <Button className="ban-type view">
-              {banType.substring(0,1)}{banType.substring(1,).toLowerCase()}
-            </Button>
-        </Form.Field>}
-        {banType !== BanType.TWITCH.toString() && <Form.Field>
-          <label>Discord Username</label>
-          <Label className='view'>{discordUsername}</Label>
-        </Form.Field>}
-        <Form.Field>
-          <label>Why were you banned?</label>
-          <Label className='view'>{banReason}</Label>
-        </Form.Field>
-        <Form.Field>
-          <label>Do you think Your ban was justified?</label>
-          <Button className="ban-just view">
-            {banJustified ? "Yes" : "No"}
-          </Button>
-        </Form.Field>
-        <Form.Field>
-          <label>Why do you think you should be unbanned?</label>
-          <Label className='view'>{appealReason}</Label>
-        </Form.Field>
-        {!!additionalNotes && <Form.Field>
-          <label>Anything else you'd like to add?</label>
-          <Label className='view'>{additionalNotes}</Label>
-        </Form.Field>}
-        <hr />
-        <div>
-          <div className="bottom-bar">
-            <Button 
-              type='submit' 
-              className="bottom-bar-button"
-              disabled={!isUserAdmin(roles) && !isEditable(judgement?.status)} 
-              onClick={() => setUsernameVisible(!usernameVisible)}
-              >
-                <Icon size="large" name="edit" className="bottom-icons" />
-            </Button>
-            <Button 
-              type='submit' 
-              className="bottom-bar-button"
-              disabled={!isUserAdmin(roles) && !isEditable(judgement?.status)}  
-              onClick={() => setUsernameVisible(!usernameVisible)}
-              >
-                <Icon size="large" name="trash" className="bottom-icons" />
-            </Button>
-          </div>
-          <div className="bottom-bar">
-          {isUserAdmin(roles) && <ButtonGroup className="admin-buttons">
-            <Button 
-              type='submit'
-              animated='fade'
-              className="bottom-bar-button"
-              onClick={() => setUsernameVisible(!usernameVisible)}
-            >
-              <Button.Content className="hidden-text" hidden>Upload{<br />}Evidence</Button.Content>
-              <Button.Content visible>
-                <Icon size="large" name="upload" className="bottom-icons" />
-              </Button.Content>
-            </Button>
-            <Button.Or className="admin-or" />
-            <Button 
-              type='submit'
-              animated='fade'
-              className="bottom-bar-button"
-              onClick={() => setUsernameVisible(!usernameVisible)}
-            >
-              <Button.Content className="hidden-text" hidden>Review{<br />}Evidence</Button.Content>
-              <Button.Content visible>
-                <Icon size="large" name="law" className="bottom-icons" />
-              </Button.Content>
-            </Button>
-            <Button.Or className="admin-or" />
-            <Button 
-              type='submit' 
-              animated='fade'
-              className="bottom-bar-button"
-              onClick={() => setUsernameVisible(!usernameVisible)}
-            >
-              <Button.Content className="hidden-text" hidden>Submit{<br />}Judgement</Button.Content>
-              <Button.Content visible>
-                <Icon size="large" name="legal" className="bottom-icons" />
-              </Button.Content>
-            </Button>
-          </ButtonGroup>}
-          </div>
-          <div className="bottom-bar">
-            {judgement && <Label color={getColorByStatus(judgement.status)} size="big" className="status-label">{judgement.status}
-              </Label>}
-          </div>
-        </div>
-      </Form>}
+      {appealId && !isLoading && 
+      <Grid verticalAlign='middle' centered>
+        <Grid.Column width={1} floated='left' textAlign='center'>
+          {(!!appeals && !!index && index > 0) && <Link 
+            to={`/appeals/${appeals[index - 1].appealId}`}
+            state={{index: index - 1}}
+          >
+            <Icon className="grid-form-arrow-right" size="huge" name="chevron left"/>
+          </Link>}
+        </Grid.Column>
+        <Grid.Column className="form-column" width={14}>
+          <Form className="view-form">
+            <Form.Field>
+              <label>Twitch Username</label>
+              <Input className="name-view" icon={
+                <Button className="unhide-button" onClick={() => setUsernameVisible(!usernameVisible)}>
+                  <Icon className="unhide-icon" name={usernameVisible ? "eye": "eye slash"} /></Button>
+                } 
+                onClick={() => setUsernameVisible(!usernameVisible)}
+                value={twitchUsername} disabled type={usernameVisible ? "text" : "password"}
+              />
+            </Form.Field>
+            {banType && <Form.Field>
+              <label>Where were you banned?</label>
+                <Button className="ban-type view">
+                  {banType.substring(0,1)}{banType.substring(1,).toLowerCase()}
+                </Button>
+            </Form.Field>}
+            {banType !== BanType.TWITCH.toString() && <Form.Field>
+              <label>Discord Username</label>
+              <Label className='view'>{discordUsername}</Label>
+            </Form.Field>}
+            <Form.Field>
+              <label>Why were you banned?</label>
+              <Label className='view'>{banReason}</Label>
+            </Form.Field>
+            <Form.Field>
+              <label>Do you think Your ban was justified?</label>
+              <Button className="ban-just view">
+                {banJustified ? "Yes" : "No"}
+              </Button>
+            </Form.Field>
+            <Form.Field>
+              <label>Why do you think you should be unbanned?</label>
+              <Label className='view'>{appealReason}</Label>
+            </Form.Field>
+            {!!additionalNotes && <Form.Field>
+              <label>Anything else you'd like to add?</label>
+              <Label className='view'>{additionalNotes}</Label>
+            </Form.Field>}
+            <hr />
+            <div>
+              <div className="bottom-bar">
+                <Button 
+                  type='submit' 
+                  className="bottom-bar-button"
+                  disabled={!isUserAdmin(roles) && !isEditable(judgement?.status)} 
+                  onClick={() => setUsernameVisible(!usernameVisible)}
+                  >
+                    <Icon size="large" name="edit" className="bottom-icons" />
+                </Button>
+                <Button 
+                  type='submit' 
+                  className="bottom-bar-button"
+                  disabled={!isUserAdmin(roles) && !isEditable(judgement?.status)}  
+                  onClick={() => setUsernameVisible(!usernameVisible)}
+                  >
+                    <Icon size="large" name="trash" className="bottom-icons" />
+                </Button>
+              </div>
+              <div className="bottom-bar">
+              {isUserAdmin(roles) && <ButtonGroup className="admin-buttons">
+                <Button 
+                  type='submit'
+                  animated='fade'
+                  className="bottom-bar-button"
+                  onClick={() => setUsernameVisible(!usernameVisible)}
+                >
+                  <Button.Content className="hidden-text" hidden>Upload{<br />}Evidence</Button.Content>
+                  <Button.Content visible>
+                    <Icon size="large" name="upload" className="bottom-icons" />
+                  </Button.Content>
+                </Button>
+                <Button.Or className="admin-or" />
+                <Button 
+                  type='submit'
+                  animated='fade'
+                  className="bottom-bar-button"
+                  onClick={() => setUsernameVisible(!usernameVisible)}
+                >
+                  <Button.Content className="hidden-text" hidden>Review{<br />}Evidence</Button.Content>
+                  <Button.Content visible>
+                    <Icon size="large" name="law" className="bottom-icons" />
+                  </Button.Content>
+                </Button>
+                <Button.Or className="admin-or" />
+                <Button 
+                  type='submit' 
+                  animated='fade'
+                  className="bottom-bar-button"
+                  onClick={() => setUsernameVisible(!usernameVisible)}
+                >
+                  <Button.Content className="hidden-text" hidden>Submit{<br />}Judgement</Button.Content>
+                  <Button.Content visible>
+                    <Icon size="large" name="legal" className="bottom-icons" />
+                  </Button.Content>
+                </Button>
+              </ButtonGroup>}
+              </div>
+              <div className="bottom-bar">
+                {judgement && <Label color={getColorByStatus(judgement.status)} size="big" className="status-label">{judgement.status}
+                  </Label>}
+              </div>
+            </div>
+          </Form>
+        </Grid.Column>
+        <Grid.Column width={1} floated='right' textAlign='center'>
+          {!!appeals && index !== undefined && (index < appeals.length - 1) && <Link 
+            to={`/appeals/${appeals[index + 1].appealId}`}
+            state={{index: index + 1}}
+          >
+            <Icon className="grid-form-arrow-right" size="huge" name="chevron right"/>
+          </Link>}
+        </Grid.Column>
+      </Grid>
+      }
     </div>
   );
 };
@@ -196,7 +223,8 @@ const mapStateToProps = (state: BanState) => {
     judgement: state.appeal.judgement,
     isLoading: state.appeal.isLoading,
     roles: state.auth.roles,
-    error: state.alert.error
+    error: state.alert.error,
+    appeals: state.appeals.appeals
   }
 }
 

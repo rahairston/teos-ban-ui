@@ -11,3 +11,11 @@ export const loaderOverride: CSSProperties = {
   margin: "30vh 0 50px 0",
   textAlign: "center"
 };
+
+export function getWindowDimensions() {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height
+  };
+}
