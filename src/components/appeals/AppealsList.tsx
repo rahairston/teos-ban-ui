@@ -10,6 +10,10 @@ import { AppealResponse } from '../appeal/api';
 import { AppealFilters } from './api';
 import { Link } from 'react-router-dom';
 
+interface IPageData {
+  pageCount: number;
+  pageSize: number;
+}
 interface IProps {
   appeals: AppealResponse[];
   totalPages: number;
@@ -29,26 +33,56 @@ const getColumnCount = (innerWidth: number): SemanticWIDTHS => {
   }
 }
 
-const renderBottomNav = (currentPage: number, totalPages: number, setPageCount: (pageNum: number) => void) => {
-  const startingNum = currentPage === 1 ? currentPage : (currentPage === totalPages ? currentPage - 2 :
+const changePageSize = (newSize: number, setPageData: (obj: IPageData) => void, clear: () => void) => {
+  const pageData = {
+    pageSize: newSize,
+    pageCount: 1
+  }
+  setPageData(pageData);
+}
+
+const renderBottomNav = (pageData: IPageData, totalPages: number, setPageData: (obj: IPageData) => void) => {
+  const currentPage = pageData.pageCount;
+  const startingNum = currentPage <= 1 ? 1 : ((currentPage === totalPages && totalPages !== 2) ? currentPage - 2 :
     currentPage - 1);
+  
   return (
     <Menu floated='right' pagination>
-      <Menu.Item as='a' icon>
+      {totalPages !== 1 && currentPage !== 1 && <Menu.Item as='a' icon onClick={() => setPageData({
+          pageCount: currentPage - 1,
+          pageSize: pageData.pageSize
+        })
+      }>
         <Icon name='chevron left' />
-      </Menu.Item>
-      <Menu.Item as='a' active={currentPage===startingNum} onClick={() => setPageCount(startingNum)}>
+      </Menu.Item>}
+      <Menu.Item as='a' active={currentPage===startingNum} onClick={() => setPageData({
+          pageCount: startingNum,
+          pageSize: pageData.pageSize
+        })
+      }>
         {startingNum}
       </Menu.Item>
-      {totalPages >= 2 && <Menu.Item as='a' active={currentPage===startingNum + 1} onClick={() => setPageCount(startingNum + 1)}>
+      {totalPages >= 2 && <Menu.Item as='a' active={currentPage===startingNum + 1} onClick={() => setPageData({
+          pageCount: startingNum + 1,
+          pageSize: pageData.pageSize
+        })
+      }>
         {startingNum + 1}
       </Menu.Item>}
-      {totalPages >= 3 && <Menu.Item as='a' active={currentPage===startingNum + 2} onClick={() => setPageCount(startingNum + 2)}>
+      {totalPages >= 3 && <Menu.Item as='a' active={currentPage===startingNum + 2} onClick={() => setPageData({
+          pageCount: startingNum + 2,
+          pageSize: pageData.pageSize
+        })
+      }>
         {startingNum + 2}
       </Menu.Item>}
-      <Menu.Item as='a' icon>
+      {totalPages !== 1 && currentPage !== totalPages && <Menu.Item as='a' icon onClick={() => setPageData({
+          pageCount: currentPage + 1,
+          pageSize: pageData.pageSize
+        })
+      }>
         <Icon name='chevron right' />
-      </Menu.Item>
+      </Menu.Item>}
     </Menu>
   );
 }
@@ -56,8 +90,7 @@ const renderBottomNav = (currentPage: number, totalPages: number, setPageCount: 
 function AppealsList(props: IProps) {
 
   const { appeals, totalSize, totalPages, load, clear } = props;
-  const [pageCount, setPageCount] = useState(1);
-  const [pageSize, setPageSize] = useState(1);
+  const [pageData, setPageData] = useState({pageCount: 1, pageSize: 10})
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
   useEffect(() => {
@@ -71,13 +104,15 @@ function AppealsList(props: IProps) {
   
   useEffect(() => {
     const filters: AppealFilters = {
-      pageCount,
-      pageSize
+      pageCount: pageData.pageCount,
+      pageSize: pageData.pageSize
     };
     load(filters);
 
-    // return () => clear();
-  }, [pageCount, pageSize, load, clear]);
+    return () => clear();
+  }, [pageData, load, clear]);
+
+  const {pageCount, pageSize} = pageData;
 
   const gridWidth = getColumnCount(windowDimensions.width);
 
@@ -94,9 +129,10 @@ function AppealsList(props: IProps) {
           <Grid.Column>
             <Dropdown text={`${pageSize}`} className="display-count">
               <Dropdown.Menu>
-                <Dropdown.Item className="display-item" text="10" onClick={() => setPageSize(10)}/>
-                <Dropdown.Item className="display-item" text="25" onClick={() => setPageSize(25)}/>
-                <Dropdown.Item className="display-item" text="50" onClick={() => setPageSize(50)}/>
+              <Dropdown.Item className="display-item" text="1" onClick={() => changePageSize(1, setPageData, clear)}/>
+                <Dropdown.Item className="display-item" text="10" onClick={() => changePageSize(10, setPageData, clear)}/>
+                <Dropdown.Item className="display-item" text="25" onClick={() => changePageSize(25, setPageData, clear)}/>
+                <Dropdown.Item className="display-item" text="50" onClick={() => changePageSize(50, setPageData, clear)}/>
               </Dropdown.Menu>
             </Dropdown>
           </Grid.Column>
@@ -109,7 +145,6 @@ function AppealsList(props: IProps) {
                   className="grid-item" 
                   key={appeal.appealId} 
                   to={`/appeals/${appeal.appealId}`}
-                  state={{index: index}}
                 >
                   <Card className="grid-item" key={appeal.appealId}>
                     <Card.Content>
@@ -130,7 +165,7 @@ function AppealsList(props: IProps) {
           </Grid.Column>
           <Grid.Column />
           <Grid.Column>
-            {renderBottomNav(pageCount, totalPages, setPageCount)}
+            {renderBottomNav(pageData, totalPages, setPageData)}
           </Grid.Column>
         </Grid.Row>
       </Grid>

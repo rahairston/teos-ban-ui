@@ -6,6 +6,7 @@ import { axiosInstance } from '../../util/axios';
 import { ErrorResponseWrapper } from '../../constants';
 import { clearAllAlerts, error } from '../alert/reducer';
 import { clearAppeal } from '../appeal/reducer';
+import { clearAppeals } from '../appeals/reducer';
 
 const initialState: AuthState = {
   accessToken: undefined,
@@ -136,8 +137,9 @@ export const RefreshAction = (token: string) => (dispatch: Dispatch) => {
 
 export const LogoutAction = (dispatch: Dispatch) => {
   dispatch(clearAllAlerts());
-  dispatch(clearAppeal())
-  dispatch(logout())
+  dispatch(clearAppeal());
+  dispatch(clearAppeals());
+  dispatch(logout());
 }
 
 export const { loginError, loginStart, loginSuccessful, logout, refreshSuccessful } = authReducer.actions;
