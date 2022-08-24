@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppealRequest, AppealResponse, submitAppeal, getAppeal} from './api';
+import { AppealRequest, AppealResponse, submitAppeal, getAppeal, deleteAppeal} from './api';
 import * as _ from 'lodash';
 import { Dispatch } from 'redux';
 import { AppealState } from './state';
@@ -17,6 +17,8 @@ const initialState: AppealState = {
   additionalNotes: undefined,
   previousAppealId: undefined,
   additionalData: undefined,
+  prevPageId: undefined,
+  nextPageId: undefined,
   isLoading: false,
   isSubmitting: false
 };
@@ -41,6 +43,9 @@ export const appealReducer = createSlice({
     loadingComplete: (state, action: PayloadAction<AppealResponse>) => {
       state.isLoading = false;
       state = _.merge(state, action.payload);
+    },
+    deleteStart: (state) => {
+      state.isLoading = true;
     },
     submitOrLoadError: (state) => {
       state.isLoading = false;
@@ -99,6 +104,33 @@ export const load = (appealId: string) => (dispatch: Dispatch) => {
   });
 }
 
-export const { clearAppeal, submitStart, submitComplete, loadingStart, loadingComplete, submitOrLoadError } = appealReducer.actions;
+export const deleteApp = (appealId: string) => (dispatch: Dispatch) => {
+  dispatch(deleteStart());
+  deleteAppeal(appealId).then(() => {
+    dispatch(clearAppeal());
+    dispatch(success({
+      header: "Deleted",
+      message: "Appeal was deleted."
+    }))
+  }).catch((err: ErrorResponseWrapper) => {
+    dispatch(submitOrLoadError());
+    const {response} = err;
+    const header = `Unable to delete appeal with ID ${appealId}`
+    if (response.status === 500) {
+      dispatch(error({
+        header,
+        message: "Internal Server Error"
+      }));
+    } else {
+      dispatch(error({
+        header,
+        message: "Error"
+      }));
+    }
+  });
+}
+
+
+export const { clearAppeal, deleteStart, submitStart, submitComplete, loadingStart, loadingComplete, submitOrLoadError } = appealReducer.actions;
 
 export default appealReducer.reducer;

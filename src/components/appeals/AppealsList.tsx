@@ -92,6 +92,8 @@ function AppealsList(props: IProps) {
   const { appeals, totalSize, totalPages, load, clear } = props;
   const [pageData, setPageData] = useState({pageCount: 1, pageSize: 10})
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+  const [banTypeFilter, setBanTypeFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
     function handleResize() {
@@ -105,12 +107,14 @@ function AppealsList(props: IProps) {
   useEffect(() => {
     const filters: AppealFilters = {
       pageCount: pageData.pageCount,
-      pageSize: pageData.pageSize
+      pageSize: pageData.pageSize,
+      type: banTypeFilter === "All" ? undefined : banTypeFilter.toUpperCase(),
+      status: statusFilter === "All" ? undefined : statusFilter
     };
     load(filters);
 
     return () => clear();
-  }, [pageData, load, clear]);
+  }, [pageData, banTypeFilter, statusFilter, load, clear]);
 
   const {pageCount, pageSize} = pageData;
 
@@ -123,13 +127,28 @@ function AppealsList(props: IProps) {
           <Grid.Column className="grid-header">
               Ban Appeals
           </Grid.Column>
-          <Grid.Column>
-            
+          <Grid.Column className="filter-column">
+            <Dropdown text={`Type: ${banTypeFilter}`} className="type-filters">
+              <Dropdown.Menu>
+              <Dropdown.Item className="display-item" text="All" onClick={() => setBanTypeFilter("All")}/>
+                <Dropdown.Item className="display-item" text="Both" onClick={() => setBanTypeFilter("Both")}/>
+                <Dropdown.Item className="display-item" text="Discord" onClick={() => setBanTypeFilter("Discord")}/>
+                <Dropdown.Item className="display-item" text="Twitch" onClick={() => setBanTypeFilter("Twitch")}/>
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown text={`Status: ${statusFilter}`} className="status-filters">
+              <Dropdown.Menu>
+                <Dropdown.Item className="display-item" text="All" onClick={() => setStatusFilter("All")}/>
+                <Dropdown.Item className="display-item" text="Pending" onClick={() => setStatusFilter("Pending")}/>
+                <Dropdown.Item className="display-item" text="Reviewing" onClick={() => setStatusFilter("Reviewing")}/>
+                <Dropdown.Item className="display-item" text="Unbanned" onClick={() => setStatusFilter("Unbanned")}/>
+                <Dropdown.Item className="display-item" text="Ban Upheld" onClick={() => setStatusFilter("Ban Upheld")}/>
+              </Dropdown.Menu>
+            </Dropdown>
           </Grid.Column>
           <Grid.Column>
             <Dropdown text={`${pageSize}`} className="display-count">
               <Dropdown.Menu>
-              <Dropdown.Item className="display-item" text="1" onClick={() => changePageSize(1, setPageData, clear)}/>
                 <Dropdown.Item className="display-item" text="10" onClick={() => changePageSize(10, setPageData, clear)}/>
                 <Dropdown.Item className="display-item" text="25" onClick={() => changePageSize(25, setPageData, clear)}/>
                 <Dropdown.Item className="display-item" text="50" onClick={() => changePageSize(50, setPageData, clear)}/>
@@ -150,7 +169,8 @@ function AppealsList(props: IProps) {
                     <Card.Content>
                       Appeal {(pageCount - 1) + index + 1}
                       <Card.Meta>
-                        {appeal.judgement && <span>{appeal.judgement.status}</span>}
+                        
+                        {appeal.judgement && <span>{appeal.banType} {appeal.judgement.status}</span>}
                       </Card.Meta>
                     </Card.Content>
                   </Card>

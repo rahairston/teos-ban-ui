@@ -21,7 +21,7 @@
 }
 
 .field > label.error, small.error{
-  color: #000 !important;
+  color: rgb(255, 120, 120) !important;
 }
 
 small.error {

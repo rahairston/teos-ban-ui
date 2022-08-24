@@ -8,13 +8,12 @@ import { Dispatch } from 'redux';
 import { isUserAdmin, loaderOverride } from '../../util/common';
 import { clearAppeal, load } from './reducer';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { AppealResponse, BanType, JudgementResponse } from './api';
+import { BanType, JudgementResponse } from './api';
 import { PulseLoader } from 'react-spinners';
+import Delete from '../deleteModal/delete';
 interface IProps {
   load: (appealId: string) => void;
   clear: () => void;
-  appeals: AppealResponse[];
-  accessToken?: string;
   appealId?: string;
   twitchUsername?: string;
   discordUsername?: string;
@@ -26,6 +25,8 @@ interface IProps {
   previousAppealId?: string;
   additionalData?: string;
   judgement?: JudgementResponse;
+  prevPageId?: string;
+  nextPageId?: string;
   isLoading: boolean;
   error?: boolean;
   roles?: string[];
@@ -46,21 +47,22 @@ const getColorByStatus = (judgementStatus: string | undefined): SemanticCOLORS =
   }
 }
 
-const isEditable = (judgementStatus: string | undefined): boolean => {
-  return !!judgementStatus && judgementStatus === "PENDING";
+const isEditable = (judgementStatus: any | undefined): boolean => {
+  return !!judgementStatus && judgementStatus.status === "PENDING";
 }
 
 function Appeal(props: IProps) {
 
   const params = useParams();
-
-  const {appeals, appealId, twitchUsername, discordUsername, banType, 
-      banReason, banJustified, appealReason, additionalNotes, judgement,
-      previousAppealId, additionalData, isLoading, load, clear, roles} = props;
-
   const location: any = useLocation()
   const { index } = 
     location.state ? location.state : {index: undefined};
+
+  const [open, setOpen] = useState(false);
+
+  const {appealId, twitchUsername, discordUsername, banType, 
+      banReason, banJustified, appealReason, additionalNotes, judgement,
+      previousAppealId, additionalData, prevPageId, nextPageId, isLoading, load, clear, roles} = props;
   
   useEffect(() => {    
     if (params.id) {
@@ -80,9 +82,8 @@ function Appeal(props: IProps) {
       {appealId && !isLoading && 
       <Grid verticalAlign='middle' centered>
         <Grid.Column width={1} floated='left' textAlign='center'>
-          {(!!appeals && !!index && index > 0) && <Link 
-            to={`/appeals/${appeals[index - 1].appealId}`}
-            state={{index: index - 1}}
+          {!!prevPageId && <Link 
+            to={`/appeals/${prevPageId}`}
           >
             <Icon className="grid-form-arrow-right" size="huge" name="chevron left"/>
           </Link>}
@@ -133,19 +134,17 @@ function Appeal(props: IProps) {
                 <Button 
                   type='submit' 
                   className="bottom-bar-button"
-                  disabled={!isUserAdmin(roles) && !isEditable(judgement?.status)} 
+                  disabled={!isUserAdmin(roles) && !isEditable(judgement)} 
                   onClick={() => setUsernameVisible(!usernameVisible)}
                   >
                     <Icon size="large" name="edit" className="bottom-icons" />
                 </Button>
-                <Button 
-                  type='submit' 
-                  className="bottom-bar-button"
-                  disabled={!isUserAdmin(roles) && !isEditable(judgement?.status)}  
-                  onClick={() => setUsernameVisible(!usernameVisible)}
-                  >
-                    <Icon size="large" name="trash" className="bottom-icons" />
-                </Button>
+                <Delete 
+                  open={open}
+                  appealId={appealId}
+                  setOpen={setOpen}
+                  disabled={!isUserAdmin(roles) && !isEditable(judgement)}
+                />
               </div>
               <div className="bottom-bar">
               {isUserAdmin(roles) && <ButtonGroup className="admin-buttons">
@@ -194,9 +193,8 @@ function Appeal(props: IProps) {
           </Form>
         </Grid.Column>
         <Grid.Column width={1} floated='right' textAlign='center'>
-          {!!appeals && index !== undefined && (index < appeals.length - 1) && <Link 
-            to={`/appeals/${appeals[index + 1].appealId}`}
-            state={{index: index + 1}}
+          {!!nextPageId && <Link 
+            to={`/appeals/${nextPageId}`}
           >
             <Icon className="grid-form-arrow-right" size="huge" name="chevron right"/>
           </Link>}
@@ -209,7 +207,6 @@ function Appeal(props: IProps) {
 
 const mapStateToProps = (state: BanState) => {
   return {
-    accessToken: state.auth.accessToken,
     appealId: state.appeal.appealId,
     twitchUsername: state.appeal.twitchUsername,
     discordUsername: state.appeal.discordUsername,
@@ -221,10 +218,11 @@ const mapStateToProps = (state: BanState) => {
     previousAppealId: state.appeal.previousAppealId,
     additionalData: state.appeal.additionalData,
     judgement: state.appeal.judgement,
+    prevPageId: state.appeal.prevPageId,
+    nextPageId: state.appeal.nextPageId,
     isLoading: state.appeal.isLoading,
     roles: state.auth.roles,
-    error: state.alert.error,
-    appeals: state.appeals.appeals
+    error: state.alert.error
   }
 }
 

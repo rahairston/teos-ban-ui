@@ -10,6 +10,8 @@ export interface AppealState {
     previousAppealId?: string;
     additionalData?: string;
     judgement?: any; // todo
+    prevPageId?: string;
+    nextPageId?: string;
     isLoading: boolean;
     isSubmitting: boolean;
 

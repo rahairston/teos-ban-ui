@@ -29,20 +29,21 @@ const validateSubmit = (data: AppealRequest, twitchUsername: string, roles: stri
     err.twitchUsername = "Twitch username does not match input name";
   }
 
-  if (data.banType !== BanType.TWITCH.toString() && !!data.discordUsername) {
+  if (data.banType !== BanType.TWITCH.toString() && !data.discordUsername) {
     err.discordUsername = "Discord username must be provided if the ban type is Discord or Both";
   }
 
   if (!data.banReason) {
     err.banReason = "Ban reason must not be empty."
   } else if (data.banReason.length < 10) { 
+    console.log(data);
     err.banReason = "Ban reason must be 10 characters minimum."
   }
 
   if (!data.appealReason) {
     err.appealReason = "Appeal reason must not be empty."
   } else if (data.appealReason.length < 10) { 
-    err.banReason = "Appeal reason must be 10 characters minimum."
+    err.appealReason = "Appeal reason must be 10 characters minimum."
   }
 
   if (Object.keys(err).length > 0) {
@@ -64,7 +65,7 @@ function AppealForm(props: IProps) {
 
   const [errors, setErrors] = useState({} as IErrors)
   const [username, setUsername] = useState("");
-  const [banType, setBanType] = useState(BanType.TWITCH)
+  const [banType, setBanType] = useState(BanType.TWITCH);
   const [discordName, setDiscordName] = useState("");
   const [banReason, setBanReason] = useState("");
   const [banJustified, setBanJustified] = useState(true);

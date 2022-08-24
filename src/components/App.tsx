@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import { TokenResponse } from './auth/api';
 import { TokenShared } from './auth/reducer';
 import AppealsList from './appeals/AppealsList';
+import AppealEdit from './appeal/AppealEdit';
 
 interface IProps {
   displayName?: string;
@@ -61,6 +62,7 @@ function App(props: IProps) {
           <Route path="/submitAppeal" element={<AppealForm />} />
           <Route path="/appeals" element={<AppealsList />} />
           <Route path="/appeals/:id" element={<AppealView />} />
+          <Route path="/appeals/:id/edit" element={<AppealEdit />} />
           <Route path="/redirect" element={<Redirect />} />
         </Routes>
       </BrowserRouter>

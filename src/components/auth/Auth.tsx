@@ -32,7 +32,7 @@ const generateState = () => {
 };
 
 function Auth(props: IProps) {
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchParams] = useSearchParams();
   const {accessToken, loggingIn} = props;
 
   let code = searchParams.get("code");
@@ -44,7 +44,6 @@ function Auth(props: IProps) {
     searchParams.delete("code");
     searchParams.delete("scope");
     searchParams.delete("state");
-    setSearchParams({});
   }
 
   const urlState = generateState();

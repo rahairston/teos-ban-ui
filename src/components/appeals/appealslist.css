@@ -54,3 +54,21 @@
 .appeal-column {
   min-height: 120px;
 }
+
+.filter-column {
+  margin: auto !important;
+}
+
+.status-filters, .type-filters {
+  color: yellow;
+  vertical-align: middle;
+  font-size: large !important;
+}
+
+.type-filters {
+  float: left;
+}
+
+.status-filters {
+  float: right;
+}

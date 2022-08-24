@@ -6,8 +6,8 @@ export interface AppealFilters {
   pageCount: number;
   pageSize: number;
   username?: string;
-  banType?: string;
-  judgementStatus?: string;
+  type?: string;
+  status?: string;
 }
 
 const basePath = "/appeals"
