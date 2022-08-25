@@ -7,9 +7,9 @@ import { Dispatch } from 'redux';
 import * as _ from 'lodash';
 import { isUserAdmin, loaderOverride } from '../../util/common';
 import { AppealRequest, BanType } from './api';
-import { clearAppeal, load, submit } from './reducer';
+import { clearAppeal, load, update } from './reducer';
 import { PulseLoader } from 'react-spinners';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 interface IProps {
   displayName?: string;
@@ -26,7 +26,7 @@ interface IProps {
   additionalData?: string;
   isLoading: boolean;
   error?: boolean;
-  submit: (request: AppealRequest) => void;
+  submit: (appealId: string, request: AppealRequest) => void;
   load: (appealId: string) => void;
   clear: () => void;
 }
@@ -40,7 +40,7 @@ interface IErrors {
 }
 
 const validateSubmit = (data: AppealRequest, twitchUsername: string|undefined, roles: string[]|undefined, setErrors: any, 
-    submit: (request: AppealRequest) => void, appealId: string|undefined, props: IProps) => {
+    submit: (appealId: string, request: AppealRequest) => void, appealId: string|undefined, props: IProps) => {
 
   const err: IErrors = {};
   if (isUserAdmin(roles) && !!data.twitchUsername && data.twitchUsername !== twitchUsername) {
@@ -69,7 +69,7 @@ const validateSubmit = (data: AppealRequest, twitchUsername: string|undefined, r
   if (Object.keys(err).length > 0 || !appealId) {
     setErrors(err);
   } else {
-    // submit(data);
+    submit(appealId, data);
   }
 };
 
@@ -81,11 +81,25 @@ const onFormChange = (key: string, value: any, errors: IErrors, setError: any, c
   }
 }
 
+const anyChange = (data: any, props: any) : boolean => {
+  if (!data) { 
+    return false; 
+  }
+
+  const changedValues = Object.keys(data).filter((key: string) => {
+    return !!data[key]
+  });
+
+  return changedValues.filter((key: string) => {
+    return data[key] !== props[key]
+  }).length > 0;
+}
+
 function AppealEdit(props: IProps) {
 
   const params = useParams();
 
-  const { displayName, isLoading, load, clear, roles} = props;
+  const { displayName, isLoading, submit, load, clear, roles} = props;
 
   const [errors, setErrors] = useState({} as IErrors)
   const [twitchUsername, setUsername] = useState(props.twitchUsername);
@@ -204,11 +218,16 @@ function AppealEdit(props: IProps) {
         <hr />
         <Button 
           type='submit' 
-          disabled={props.isSubmitting || !params.id} 
+          disabled={props.isSubmitting || !params.id || !anyChange(data, props)} 
           onClick={() => validateSubmit(data, displayName, roles, setErrors, submit, params.id, props)}
           >
             Submit
         </Button>
+        <Link to={`/appeals/${params.id}`}>
+          <Button floated='right'>
+            Go Back
+          </Button>
+        </Link>
       </Form>}
     </div>
   );
@@ -238,7 +257,7 @@ const mapStateToProps = (state: BanState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    submit: (request: AppealRequest) => submit(request)(dispatch),
+    submit: (appealId: string, request: AppealRequest) => update(appealId, request)(dispatch),
     load: (appealId: string) => load(appealId)(dispatch),
     clear: () => dispatch(clearAppeal())
   }

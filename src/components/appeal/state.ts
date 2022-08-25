@@ -18,4 +18,5 @@ export interface AppealState {
     // TODO - never mind but keeping in here for ideas later -> dispath from API to evidennce/judgement reducers with these
     // evidence?: EvidenceData[];
     // judgement?: JudgementData;
+    // bannedBy?: BAnnedData[];
 }

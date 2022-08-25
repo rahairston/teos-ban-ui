@@ -1,34 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppealRequest, AppealResponse, submitAppeal, getAppeal, deleteAppeal, updateAppeal} from './api';
+import { EvidenceRequest, EvidenceResponse, submitEvidence, getEvidence, deleteEvidence, updateEvidence} from './api';
 import * as _ from 'lodash';
 import { Dispatch } from 'redux';
-import { AppealState } from './state';
+import { EvidenceState } from './state';
 import { ErrorResponseWrapper } from '../../constants';
 import { error, success } from '../alert/reducer';
 
-const initialState: AppealState = {
-  appealId: undefined,
-  twitchUsername: undefined,
-  discordUsername: undefined,
-  banReason: undefined,
-  banType: undefined,
-  banJustified: undefined,
-  appealReason: undefined,
-  additionalNotes: undefined,
-  previousAppealId: undefined,
-  additionalData: undefined,
-  prevPageId: undefined,
-  nextPageId: undefined,
+const initialState: EvidenceState = {
+  evidence: [],
+  bannedBy: [],
   isLoading: false,
   isSubmitting: false
 };
 
-export const appealReducer = createSlice({
-  name: 'appeal',
+export const evidenceReducer = createSlice({
+  name: 'evidence',
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    clearAppeal: () => {
+    clearEvidence: () => {
       return initialState;
     },
     submitStart: (state) => {
@@ -40,9 +30,9 @@ export const appealReducer = createSlice({
     loadingStart: (state) => {
       state.isLoading = true
     },
-    loadingComplete: (state, action: PayloadAction<AppealResponse>) => {
+    loadingComplete: (state, action: PayloadAction<EvidenceResponse>) => {
       state.isLoading = false;
-      state = _.merge(state, action.payload);
+      state.evidence.push(action.payload);
     },
     deleteStart: (state) => {
       state.isLoading = true;
@@ -54,11 +44,11 @@ export const appealReducer = createSlice({
   }
 });
 
-export const submit = (request: AppealRequest) => (dispatch: Dispatch) => {
+export const submit = (request: EvidenceRequest) => (dispatch: Dispatch) => {
   dispatch(submitStart());
-  submitAppeal(request).then((location: string) => {
+  submitEvidence(request).then((location: string) => {
     dispatch(success({
-      header: "Created Appeal",
+      header: "Created Evidence",
       message: "You can view it ",
       link: `/appeals/${location}`,
       linkText: "here"
@@ -84,7 +74,7 @@ export const submit = (request: AppealRequest) => (dispatch: Dispatch) => {
 
 export const load = (appealId: string) => (dispatch: Dispatch) => {
   dispatch(loadingStart());
-  getAppeal(appealId).then((data: AppealResponse) => {
+  getEvidence(appealId).then((data: EvidenceResponse) => {
     dispatch(loadingComplete(data));
   }).catch((err: ErrorResponseWrapper) => {
     dispatch(submitOrLoadError());
@@ -104,9 +94,9 @@ export const load = (appealId: string) => (dispatch: Dispatch) => {
   });
 }
 
-export const update = (appealId: string, request: AppealRequest) => (dispatch: Dispatch) => {
+export const update = (appealId: string, request: EvidenceRequest) => (dispatch: Dispatch) => {
   dispatch(submitStart());
-  updateAppeal(appealId, request).then(() => {
+  updateEvidence(appealId, request).then(() => {
     dispatch(submitComplete());
     dispatch(success({
       header: "Updated Appeal",
@@ -134,8 +124,8 @@ export const update = (appealId: string, request: AppealRequest) => (dispatch: D
 
 export const deleteApp = (appealId: string) => (dispatch: Dispatch) => {
   dispatch(deleteStart());
-  deleteAppeal(appealId).then(() => {
-    dispatch(clearAppeal());
+  deleteEvidence(appealId).then(() => {
+    dispatch(clearEvidence());
     dispatch(success({
       header: "Deleted",
       message: "Appeal was deleted."
@@ -159,6 +149,6 @@ export const deleteApp = (appealId: string) => (dispatch: Dispatch) => {
 }
 
 
-export const { clearAppeal, deleteStart, submitStart, submitComplete, loadingStart, loadingComplete, submitOrLoadError } = appealReducer.actions;
+export const { clearEvidence, deleteStart, submitStart, submitComplete, loadingStart, loadingComplete, submitOrLoadError } = evidenceReducer.actions;
 
-export default appealReducer.reducer;
+export default evidenceReducer.reducer;

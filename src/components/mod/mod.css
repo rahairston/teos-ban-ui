@@ -1,0 +1,18 @@
+.ModModal {
+  display: inline-block;
+  width: 33.333333333%;
+}
+
+.mod-actions {
+  width: 100%
+  /* text-align: center; */
+}
+
+.mod-button {
+  width: 30%;
+  margin: 0 10% !important;
+}
+
+.admin-buttons > .ModModal > .bottom-bar-button {
+  width: 100%;
+}

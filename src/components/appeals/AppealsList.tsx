@@ -8,7 +8,7 @@ import { getWindowDimensions, isUserAdmin } from '../../util/common';
 import { clearAppeals, load } from './reducer';
 import { AppealResponse } from '../appeal/api';
 import { AppealFilters } from './api';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 interface IPageData {
   pageCount: number;
@@ -39,6 +39,13 @@ const changePageSize = (newSize: number, setPageData: (obj: IPageData) => void, 
     pageCount: 1
   }
   setPageData(pageData);
+}
+
+const setFilters = (type: string|null, status: string|null, setSearch: (obj: any) => void) => {
+  setSearch({
+    type,
+    status
+  });
 }
 
 const renderBottomNav = (pageData: IPageData, totalPages: number, setPageData: (obj: IPageData) => void) => {
@@ -89,11 +96,13 @@ const renderBottomNav = (pageData: IPageData, totalPages: number, setPageData: (
 
 function AppealsList(props: IProps) {
 
+  let [searchParams, setSearchParams] = useSearchParams();
+
   const { appeals, totalSize, totalPages, load, clear } = props;
   const [pageData, setPageData] = useState({pageCount: 1, pageSize: 10})
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-  const [banTypeFilter, setBanTypeFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const banTypeFilter = !!searchParams.get("type") ? searchParams.get("type") : "All"
+  const statusFilter = !!searchParams.get("status") ? searchParams.get("status") : "All"
 
   useEffect(() => {
     function handleResize() {
@@ -108,8 +117,8 @@ function AppealsList(props: IProps) {
     const filters: AppealFilters = {
       pageCount: pageData.pageCount,
       pageSize: pageData.pageSize,
-      type: banTypeFilter === "All" ? undefined : banTypeFilter.toUpperCase(),
-      status: statusFilter === "All" ? undefined : statusFilter
+      type: banTypeFilter === "All" ? undefined : (banTypeFilter === null ? undefined : banTypeFilter.toUpperCase()),
+      status: statusFilter === "All" ? undefined : (statusFilter === null ? undefined : statusFilter)
     };
     load(filters);
 
@@ -130,19 +139,19 @@ function AppealsList(props: IProps) {
           <Grid.Column className="filter-column">
             <Dropdown text={`Type: ${banTypeFilter}`} className="type-filters">
               <Dropdown.Menu>
-              <Dropdown.Item className="display-item" text="All" onClick={() => setBanTypeFilter("All")}/>
-                <Dropdown.Item className="display-item" text="Both" onClick={() => setBanTypeFilter("Both")}/>
-                <Dropdown.Item className="display-item" text="Discord" onClick={() => setBanTypeFilter("Discord")}/>
-                <Dropdown.Item className="display-item" text="Twitch" onClick={() => setBanTypeFilter("Twitch")}/>
+              <Dropdown.Item className="display-item" text="All" onClick={() => setFilters("All", statusFilter, setSearchParams)}/>
+                <Dropdown.Item className="display-item" text="Both" onClick={() => setFilters("Both", statusFilter, setSearchParams)}/>
+                <Dropdown.Item className="display-item" text="Discord" onClick={() => setFilters("Discord", statusFilter, setSearchParams)}/>
+                <Dropdown.Item className="display-item" text="Twitch" onClick={() => setFilters("Twitch", statusFilter, setSearchParams)}/>
               </Dropdown.Menu>
             </Dropdown>
             <Dropdown text={`Status: ${statusFilter}`} className="status-filters">
               <Dropdown.Menu>
-                <Dropdown.Item className="display-item" text="All" onClick={() => setStatusFilter("All")}/>
-                <Dropdown.Item className="display-item" text="Pending" onClick={() => setStatusFilter("Pending")}/>
-                <Dropdown.Item className="display-item" text="Reviewing" onClick={() => setStatusFilter("Reviewing")}/>
-                <Dropdown.Item className="display-item" text="Unbanned" onClick={() => setStatusFilter("Unbanned")}/>
-                <Dropdown.Item className="display-item" text="Ban Upheld" onClick={() => setStatusFilter("Ban Upheld")}/>
+                <Dropdown.Item className="display-item" text="All" onClick={() => setFilters(banTypeFilter, "All", setSearchParams)}/>
+                <Dropdown.Item className="display-item" text="Pending" onClick={() => setFilters(banTypeFilter, "Pending", setSearchParams)}/>
+                <Dropdown.Item className="display-item" text="Reviewing" onClick={() => setFilters(banTypeFilter, "Reviewing", setSearchParams)}/>
+                <Dropdown.Item className="display-item" text="Unbanned" onClick={() => setFilters(banTypeFilter, "Unbanned", setSearchParams)}/>
+                <Dropdown.Item className="display-item" text="Ban Upheld" onClick={() => setFilters(banTypeFilter, "Ban Upheld", setSearchParams)}/>
               </Dropdown.Menu>
             </Dropdown>
           </Grid.Column>

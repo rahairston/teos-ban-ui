@@ -17,7 +17,7 @@ interface IProps {
 
 function renderWelcome() {
   return (
-    <Menu.Item className='nav-item'>
+    <Menu.Item className='nav-item' onClick={() => {}}>
       <Link className="nav-link" to="/">
         Teos Ban Appeals
       </Link>
@@ -44,7 +44,7 @@ function renderView() {
       className='nav-item'
       name='viewAppeals'
     >
-      <Link className="nav-link" to="/appeals">
+      <Link className="nav-link" to='/appeals?type=All&status=All'>
         View Appeals
       </Link>
     </Menu.Item>
@@ -75,8 +75,6 @@ function Nav(props: IProps) {
 
   const { displayName, roles } = props;
 
-  const [activeItem, setActiveItem] = useState()
-
   return (
     <div className="Nav">
       {!displayName && <Menu>{renderWelcome()}</Menu>}
@@ -95,18 +93,19 @@ function Nav(props: IProps) {
           <Menu.Item
             className='nav-item'
             name='submitEvidence'
-            onClick={() => setActiveItem}
           >
-            Submit Evidence
+            <Link className="nav-link" to='/appeals?type=All&status=Pending'>
+              Submit Evidence
+            </Link>
           </Menu.Item>
 
           <Menu.Item
             className='nav-item'
             name='submitJudgement'
-            active={activeItem === 'reviews'}
-            onClick={() => setActiveItem}
           >
-            Submit Judgement
+            <Link className="nav-link" to='/appeals?type=All&status=Reviewing'>
+              Submit Judgement
+            </Link>
           </Menu.Item>
 
           {renderRightButton(props)}

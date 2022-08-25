@@ -27,3 +27,7 @@
 small.error {
   font-size: 110%;
 }
+
+.disabled-link {
+  pointer-events: none;
+}

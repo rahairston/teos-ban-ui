@@ -46,6 +46,10 @@ export function submitAppeal(request: AppealRequest): Promise<string> {
   return axiosInstance.post(`${basePath}/`, request).then(data => data.headers.location);
 }
 
-export function deleteAppeal(appealId: string): Promise<AppealResponse> {
-  return axiosInstance.delete(`${basePath}/${appealId}`).then(data => data.data);
+export function updateAppeal(appealId: string, request: AppealRequest): Promise<void> {
+  return axiosInstance.put(`${basePath}/${appealId}`, request);
+}
+
+export function deleteAppeal(appealId: string): Promise<void> {
+  return axiosInstance.delete(`${basePath}/${appealId}`);
 };

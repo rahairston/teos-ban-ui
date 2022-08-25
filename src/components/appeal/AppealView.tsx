@@ -11,6 +11,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { BanType, JudgementResponse } from './api';
 import { PulseLoader } from 'react-spinners';
 import Delete from '../deleteModal/delete';
+import ModModal from '../mod/ModModal';
 interface IProps {
   load: (appealId: string) => void;
   clear: () => void;
@@ -54,11 +55,8 @@ const isEditable = (judgementStatus: any | undefined): boolean => {
 function Appeal(props: IProps) {
 
   const params = useParams();
-  const location: any = useLocation()
-  const { index } = 
-    location.state ? location.state : {index: undefined};
-
   const [open, setOpen] = useState(false);
+  const [openMod, setModOpen] = useState(false);
 
   const {appealId, twitchUsername, discordUsername, banType, 
       banReason, banJustified, appealReason, additionalNotes, judgement,
@@ -131,14 +129,18 @@ function Appeal(props: IProps) {
             <hr />
             <div>
               <div className="bottom-bar">
-                <Button 
-                  type='submit' 
-                  className="bottom-bar-button"
-                  disabled={!isUserAdmin(roles) && !isEditable(judgement)} 
-                  onClick={() => setUsernameVisible(!usernameVisible)}
+                <Link 
+                  to={`/appeals/${appealId}/edit`}
+                  className={!isUserAdmin(roles) && !isEditable(judgement) ? "disabled-link" : ""}
+                >
+                  <Button 
+                    type='submit' 
+                    className="bottom-bar-button"
+                    disabled={!isUserAdmin(roles) && !isEditable(judgement)} 
                   >
                     <Icon size="large" name="edit" className="bottom-icons" />
-                </Button>
+                  </Button>
+                </Link>
                 <Delete 
                   open={open}
                   appealId={appealId}
@@ -148,17 +150,11 @@ function Appeal(props: IProps) {
               </div>
               <div className="bottom-bar">
               {isUserAdmin(roles) && <ButtonGroup className="admin-buttons">
-                <Button 
-                  type='submit'
-                  animated='fade'
-                  className="bottom-bar-button"
-                  onClick={() => setUsernameVisible(!usernameVisible)}
-                >
-                  <Button.Content className="hidden-text" hidden>Upload{<br />}Evidence</Button.Content>
-                  <Button.Content visible>
-                    <Icon size="large" name="upload" className="bottom-icons" />
-                  </Button.Content>
-                </Button>
+                <ModModal 
+                  appealId={appealId}
+                  setOpen={setModOpen}
+                  open={openMod}
+                />
                 <Button.Or className="admin-or" />
                 <Button 
                   type='submit'
