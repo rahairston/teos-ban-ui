@@ -17,7 +17,7 @@ interface IProps {
 
 function renderWelcome() {
   return (
-    <Menu.Item className='nav-item' onClick={() => {}}>
+    <Menu.Item className='nav-item'>
       <Link className="nav-link" to="/">
         Teos Ban Appeals
       </Link>
@@ -73,11 +73,18 @@ function renderRightButton(props: IProps) {
 
 function Nav(props: IProps) {
 
-  const { displayName, roles } = props;
+  const { displayName, roles, logout } = props;
 
   return (
     <div className="Nav">
-      {!displayName && <Menu>{renderWelcome()}</Menu>}
+      {!displayName && <Menu>{renderWelcome()} <Menu.Item
+            position='right'
+            className='nav-item'
+            name='reset'
+            onClick={() => logout()}
+          >
+              Reset UI
+          </Menu.Item></Menu>}
       {displayName && !isUserAdmin(roles) && <div>
         <Menu>
           {renderSubmit()}
