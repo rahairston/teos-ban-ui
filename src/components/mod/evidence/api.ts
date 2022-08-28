@@ -1,10 +1,4 @@
-import { axiosInstance } from "../../util/axios";
-
-export interface BannedByOnject {
-  bannedById?: string;
-  name?: string;
-  banDate?: string;
-}
+import { axiosInstance } from "../../../util/axios";
 
 export interface EvidenceResponse {
   evidenceId?: string;

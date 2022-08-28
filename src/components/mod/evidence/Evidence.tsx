@@ -1,10 +1,10 @@
 import './mod.css'
 import React from 'react';
 import { connect } from 'react-redux';
-import { BanState } from '../../redux/state';
+import { BanState } from '../../../redux/state';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { Dispatch } from 'redux';
-import { deleteApp } from '../appeal/reducer';
+import { deleteApp } from '../../appeal/reducer';
 import { Link } from 'react-router-dom';
 
 interface IProps {

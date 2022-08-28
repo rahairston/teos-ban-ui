@@ -42,7 +42,7 @@ export const appealReducer = createSlice({
     },
     loadingComplete: (state, action: PayloadAction<AppealResponse>) => {
       state.isLoading = false;
-      state = _.merge(state, action.payload);
+      state = _.mergeWith(state, action.payload, (a, b) => _.isArray(b) ? b : undefined);
     },
     deleteStart: (state) => {
       state.isLoading = true;

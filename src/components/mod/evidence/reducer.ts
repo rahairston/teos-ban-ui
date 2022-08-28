@@ -3,12 +3,11 @@ import { EvidenceRequest, EvidenceResponse, submitEvidence, getEvidence, deleteE
 import * as _ from 'lodash';
 import { Dispatch } from 'redux';
 import { EvidenceState } from './state';
-import { ErrorResponseWrapper } from '../../constants';
-import { error, success } from '../alert/reducer';
+import { ErrorResponseWrapper } from '../../../constants';
+import { error, success } from '../../alert/reducer';
 
 const initialState: EvidenceState = {
   evidence: [],
-  bannedBy: [],
   isLoading: false,
   isSubmitting: false
 };

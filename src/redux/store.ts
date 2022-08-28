@@ -7,6 +7,7 @@ import storage from 'redux-persist/lib/storage' // defaults to localStorage for 
 import thunk from 'redux-thunk';
 import SetTransform from './transform';
 import appealsReducer from '../components/appeals/reducer';
+import bannedByReducer from '../components/mod/bannedBy/reducer';
 
 
 const persistConfig = {
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   alert: alertReducer,
   appeal: appealReducer,
-  appeals: appealsReducer
+  appeals: appealsReducer,
+  bannedBy: bannedByReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
