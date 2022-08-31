@@ -7,7 +7,6 @@ export interface EvidenceResponse {
 }
 
 export interface EvidenceRequest {
-  appealId: string;
   fileName?: string;
   notes?: string;
 }
@@ -15,17 +14,17 @@ export interface EvidenceRequest {
 const basePath = "/appeals"
 
 export function getEvidence(appealId: string): Promise<EvidenceResponse> {
-  return axiosInstance.get(`${basePath}/${appealId}/evidence`).then(data => data.data);
+  return axiosInstance.get(`${basePath}/${appealId}/evidence/`).then(data => data.data);
 };
 
-export function submitEvidence(request: EvidenceRequest): Promise<string> {
-  return axiosInstance.post(`${basePath}/${request.appealId}/evidence/`, request).then(data => data.headers.location);
+export function submitEvidence(appealId: string, request: EvidenceRequest): Promise<EvidenceResponse> {
+  return axiosInstance.post(`${basePath}/${appealId}/evidence/`, request).then(data => data.data);
 }
 
-export function updateEvidence(evidenceId: string, request: EvidenceRequest): Promise<void> {
-  return axiosInstance.put(`${basePath}/${evidenceId}`, request);
+export function updateEvidence(appealId: string, evidenceId: string, request: EvidenceRequest): Promise<EvidenceResponse> {
+  return axiosInstance.put(`${basePath}/${appealId}/evidence/${evidenceId}`, request);
 }
 
-export function deleteEvidence(evidenceId: string): Promise<void> {
-  return axiosInstance.delete(`${basePath}/${evidenceId}`);
+export function deleteEvidence(evidenceId: string): Promise<EvidenceResponse> {
+  return axiosInstance.delete(`${basePath}/evidence/${evidenceId}`);
 };

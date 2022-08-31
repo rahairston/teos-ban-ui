@@ -43,14 +43,12 @@ export const evidenceReducer = createSlice({
   }
 });
 
-export const submit = (request: EvidenceRequest) => (dispatch: Dispatch) => {
+export const submit = (appealId: string, request: EvidenceRequest) => (dispatch: Dispatch) => {
   dispatch(submitStart());
-  submitEvidence(request).then((location: string) => {
+  submitEvidence(appealId, request).then((response: EvidenceResponse) => {
     dispatch(success({
       header: "Created Evidence",
-      message: "You can view it ",
-      link: `/appeals/${location}`,
-      linkText: "here"
+      message: "You can view it "
     }))
     dispatch(submitComplete());
   }).catch((err: ErrorResponseWrapper) => {
@@ -93,9 +91,9 @@ export const load = (appealId: string) => (dispatch: Dispatch) => {
   });
 }
 
-export const update = (appealId: string, request: EvidenceRequest) => (dispatch: Dispatch) => {
+export const update = (appealId: string, evidenceId: string, request: EvidenceRequest) => (dispatch: Dispatch) => {
   dispatch(submitStart());
-  updateEvidence(appealId, request).then(() => {
+  updateEvidence(appealId, evidenceId, request).then(() => {
     dispatch(submitComplete());
     dispatch(success({
       header: "Updated Appeal",

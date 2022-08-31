@@ -5,6 +5,7 @@ import { BanState } from '../../redux/state';
 import { Button, ButtonGroup, Header, Icon, Modal } from 'semantic-ui-react';
 import BannedBy from './bannedBy/BannedBy';
 import { BannedByObject } from './bannedBy/api';
+import Evidence from './evidence/Evidence';
 
 interface IProps {
   setOpen: (open: boolean) => void;
@@ -23,6 +24,7 @@ function ModModal(props: IProps) {
   }, [open])
 
   const addOrEditBanned = (bannedBy && bannedBy.length > 0) ? "Edit" : "Add";
+  const addOrEditEvidence = (bannedBy && bannedBy.length > 0) ? "Edit" : "Add";
 
   return (
     <div className="ModModal">
@@ -45,7 +47,7 @@ function ModModal(props: IProps) {
         }
       >
         <Header icon>
-          {selectedView === "None" ? `What Would you Like to Do?` : (selectedView === "BannedBy" ? `Add 'Banned By'` : `Add Evidence`)}
+          {selectedView === "None" ? `What Would you Like to Do?` : (selectedView === "BannedBy" ? `${addOrEditBanned} 'Banned By'` : `Add Evidence`)}
         </Header>
         <Modal.Content>
             {selectedView === "None" && <ButtonGroup className="mod-buttons">
@@ -53,7 +55,7 @@ function ModModal(props: IProps) {
               <Button className="mod-button" onClick={() => setSelectedView("AddEvidence")}>Add Evidence</Button>
             </ButtonGroup>}
             {selectedView === "BannedBy" && <BannedBy appealId={appealId} setOpen={setOpen}/>}
-            {selectedView === "AddEvidence" && <p></p>}
+            {selectedView === "AddEvidence" && <Evidence appealId={appealId} setOpen={setOpen} />}
         </Modal.Content>
         {selectedView === "BannedBy" && <Modal.Actions>
           <Button onClick={() => setSelectedView("None")}>

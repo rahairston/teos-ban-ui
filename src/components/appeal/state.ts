@@ -1,4 +1,6 @@
 import { BannedByObject } from "../mod/bannedBy/api";
+import { EvidenceResponse } from "../mod/evidence/api";
+import { JudgementResponse } from "./api";
 
 export interface AppealState {
     appealId?: string;
@@ -11,14 +13,13 @@ export interface AppealState {
     additionalNotes?: string;
     previousAppealId?: string;
     additionalData?: string;
-    judgement?: any; // todo
     prevPageId?: string;
     nextPageId?: string;
     isLoading: boolean;
     isSubmitting: boolean;
 
-    // TODO - never mind but keeping in here for ideas later -> dispath from API to evidennce/judgement reducers with these
+    // Admin related
     bannedBy?: BannedByObject[];
-    // evidence?: EvidenceData[];
-    // judgement?: JudgementData;
+    judgement?: JudgementResponse;
+    evidence?: EvidenceResponse[];
 }

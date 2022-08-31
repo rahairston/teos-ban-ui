@@ -8,6 +8,7 @@ import thunk from 'redux-thunk';
 import SetTransform from './transform';
 import appealsReducer from '../components/appeals/reducer';
 import bannedByReducer from '../components/mod/bannedBy/reducer';
+import evidenceReducer from '../components/mod/evidence/reducer';
 
 
 const persistConfig = {
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   appeal: appealReducer,
   appeals: appealsReducer,
   bannedBy: bannedByReducer,
+  evidence: evidenceReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
