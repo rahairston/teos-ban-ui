@@ -6,25 +6,32 @@ import { Button, ButtonGroup, Header, Icon, Modal } from 'semantic-ui-react';
 import BannedBy from './bannedBy/BannedBy';
 import { BannedByObject } from './bannedBy/api';
 import Evidence from './evidence/Evidence';
-
+import { Dispatch } from 'redux';
+import { load } from '../appeal/reducer';
+import { EvidenceResponse } from './evidence/api';
 interface IProps {
   setOpen: (open: boolean) => void;
+  load: (appealId: string) => void;
   appealId: string;
   bannedBy?: BannedByObject[];
+  evidence?: EvidenceResponse[];
   open: boolean;
 }
 
 function ModModal(props: IProps) {
 
-  const { setOpen, open, appealId, bannedBy } = props;
+  const { setOpen, open, appealId, bannedBy, evidence, load } = props;
   const [selectedView, setSelectedView] = useState("None");
 
   useEffect(() => {
-    return () => setSelectedView("None");
-  }, [open])
+    return () => {
+      setSelectedView("None");
+      load(appealId);
+    }
+  }, [open, load, appealId])
 
   const addOrEditBanned = (bannedBy && bannedBy.length > 0) ? "Edit" : "Add";
-  const addOrEditEvidence = (bannedBy && bannedBy.length > 0) ? "Edit" : "Add";
+  const addOrEditEvidence = (evidence && evidence.length > 0) ? "Edit" : "Add";
 
   return (
     <div className="ModModal">
@@ -52,10 +59,10 @@ function ModModal(props: IProps) {
         <Modal.Content>
             {selectedView === "None" && <ButtonGroup className="mod-buttons">
               <Button className="mod-button" onClick={() => setSelectedView("BannedBy")}>{addOrEditBanned} Banned By</Button>
-              <Button className="mod-button" onClick={() => setSelectedView("AddEvidence")}>Add Evidence</Button>
+              <Button className="mod-button" onClick={() => setSelectedView("AddEvidence")}>{addOrEditEvidence} Evidence</Button>
             </ButtonGroup>}
             {selectedView === "BannedBy" && <BannedBy appealId={appealId} setOpen={setOpen}/>}
-            {selectedView === "AddEvidence" && <Evidence appealId={appealId} setOpen={setOpen} />}
+            {selectedView === "AddEvidence" && <Evidence appealId={appealId} open={open} />}
         </Modal.Content>
         {selectedView === "BannedBy" && <Modal.Actions>
           <Button onClick={() => setSelectedView("None")}>
@@ -75,9 +82,16 @@ function ModModal(props: IProps) {
 const mapStateToProps = (state: BanState) => {
   return {
     bannedBy: state.appeal.bannedBy,
+    evidence: state.appeal.evidence,
     roles: state.auth.roles,
     error: state.alert.error
   }
 }
 
-export default connect(mapStateToProps, null)(ModModal);
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    load: (appealId: string) => load(appealId)(dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ModModal);

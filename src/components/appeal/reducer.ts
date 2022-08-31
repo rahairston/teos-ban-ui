@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import { AppealState } from './state';
 import { ErrorResponseWrapper } from '../../constants';
 import { error, success } from '../alert/reducer';
+import { EvidenceResponse } from '../mod/evidence/api';
 
 const initialState: AppealState = {
   appealId: undefined,
@@ -43,6 +44,22 @@ export const appealReducer = createSlice({
     loadingComplete: (state, action: PayloadAction<AppealResponse>) => {
       state.isLoading = false;
       state = _.mergeWith(state, action.payload, (a, b) => _.isArray(b) ? b : undefined);
+    },
+    updateEvidenceFromModal: (state, action: PayloadAction<EvidenceResponse>) => {
+      const index = _.findIndex(state.evidence, (evidence: EvidenceResponse) => {
+        return !!evidence.evidenceId && evidence.evidenceId === action.payload.evidenceId
+      })
+
+      if (index !== -1 && !!state.evidence) {
+        state.evidence[index] = action.payload;
+      } else if (!!state.evidence) {
+        state.evidence.push(action.payload);
+      }
+    },
+    deleteEvidenceFromModal: (state, action: PayloadAction<EvidenceResponse>) => {
+      if (!!state.evidence && !!action.payload.evidenceId) {
+        state.evidence = _.filter(state.evidence, (e: EvidenceResponse) => { return e.evidenceId !== action.payload.evidenceId })
+      }
     },
     deleteStart: (state) => {
       state.isLoading = true;
@@ -159,6 +176,7 @@ export const deleteApp = (appealId: string) => (dispatch: Dispatch) => {
 }
 
 
-export const { clearAppeal, deleteStart, submitStart, submitComplete, loadingStart, loadingComplete, submitOrLoadError } = appealReducer.actions;
+export const { clearAppeal, deleteStart, submitStart, submitComplete,
+  loadingStart, loadingComplete, submitOrLoadError, updateEvidenceFromModal, deleteEvidenceFromModal } = appealReducer.actions;
 
 export default appealReducer.reducer;

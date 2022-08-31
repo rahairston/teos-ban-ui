@@ -4,7 +4,6 @@ import { Dispatch } from 'redux';
 import { BannedByState } from './state';
 import { ErrorResponseWrapper } from '../../../constants';
 import { error, success } from '../../alert/reducer';
-import { load } from '../../appeal/reducer';
 
 const initialState: BannedByState = {
   isLoading: false,
@@ -40,7 +39,6 @@ export const submit = (appealId: string, request: BannedByObject[]) => (dispatch
       header: "Updated Appeal",
       message: "Added Banned By Data."
     }));
-    load(appealId)(dispatch);
   }).catch((err: ErrorResponseWrapper) => {
     dispatch(submitOrLoadError());
     const {response} = err;

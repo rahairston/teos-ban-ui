@@ -1,5 +1,4 @@
 import './Nav.css';
-import { useState } from 'react';
 import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
 import { Dropdown, Image, Menu } from 'semantic-ui-react';
