@@ -5,3 +5,7 @@
 .admin-notes {
   margin-bottom: 10px !important;
 }
+
+.notes-view > p, .notes-view > ul > li {
+  font-size: x-large !important;
+}

@@ -7,11 +7,12 @@ import { Button, ButtonGroup, Form, Grid, Icon, Input, Label, SemanticCOLORS } f
 import { Dispatch } from 'redux';
 import { isUserAdmin, loaderOverride } from '../../util/common';
 import { clearAppeal, load } from './reducer';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { BanType, JudgementResponse } from './api';
 import { PulseLoader } from 'react-spinners';
 import Delete from '../deleteModal/delete';
 import ModModal from '../mod/ModModal';
+import EvidenceModal from '../mod/EvidenceModal';
 interface IProps {
   load: (appealId: string) => void;
   clear: () => void;
@@ -55,8 +56,9 @@ const isEditable = (judgementStatus: any | undefined): boolean => {
 function Appeal(props: IProps) {
 
   const params = useParams();
-  const [open, setOpen] = useState(false);
+  const [openDelete, setDeleteOpen] = useState(false);
   const [openMod, setModOpen] = useState(false);
+  const [openEvidence, setEvidenceOpen] = useState(false);
 
   const {appealId, twitchUsername, discordUsername, banType, 
       banReason, banJustified, appealReason, additionalNotes, judgement,
@@ -142,9 +144,9 @@ function Appeal(props: IProps) {
                   </Button>
                 </Link>
                 <Delete 
-                  open={open}
+                  open={openDelete}
                   appealId={appealId}
-                  setOpen={setOpen}
+                  setOpen={setDeleteOpen}
                   disabled={!isUserAdmin(roles) && !isEditable(judgement)}
                 />
               </div>
@@ -152,21 +154,14 @@ function Appeal(props: IProps) {
               {isUserAdmin(roles) && <ButtonGroup className="admin-buttons">
                 <ModModal 
                   appealId={appealId}
-                  setOpen={setModOpen}
                   open={openMod}
+                  setOpen={setModOpen}
                 />
                 <Button.Or className="admin-or" />
-                <Button 
-                  type='submit'
-                  animated='fade'
-                  className="bottom-bar-button"
-                  onClick={() => setUsernameVisible(!usernameVisible)}
-                >
-                  <Button.Content className="hidden-text" hidden>Review{<br />}Evidence</Button.Content>
-                  <Button.Content visible>
-                    <Icon size="large" name="law" className="bottom-icons" />
-                  </Button.Content>
-                </Button>
+                <EvidenceModal 
+                  open={openEvidence}
+                  setOpen={setEvidenceOpen}
+                />
                 <Button.Or className="admin-or" />
                 <Button 
                   type='submit' 

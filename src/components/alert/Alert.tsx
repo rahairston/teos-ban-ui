@@ -44,9 +44,9 @@ function Alert(props: IProps) {
   return (
     <div className="Alert">
       <div className='Alert-body'>
-        {info && genericAlert(true, false, false, `Info: ${infoHeader}`, infoMessage, undefined, undefined, clearInfo)}
-        {error && genericAlert(false, true, false, `Error: ${errorHeader}`, errorMessage, undefined, undefined, clearError)}
-        {success && genericAlert(false, false, true, `Success: ${successHeader}`, successMessage, successLink, successLinkText, clearSuccess)}
+        {!!info && genericAlert(true, false, false, `Info: ${infoHeader}`, infoMessage, undefined, undefined, clearInfo)}
+        {!!error && genericAlert(false, true, false, `Error: ${errorHeader}`, errorMessage, undefined, undefined, clearError)}
+        {!!success && genericAlert(false, false, true, `Success: ${successHeader}`, successMessage, successLink, successLinkText, clearSuccess)}
       </div>
     </div>
   );

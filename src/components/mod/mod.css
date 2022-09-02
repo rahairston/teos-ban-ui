@@ -1,4 +1,4 @@
-.ModModal {
+.ModModal, .EvidenceModal {
   display: inline-block;
   width: 33.333333333%;
 }
@@ -12,6 +12,6 @@
   margin: 0 10% !important;
 }
 
-.admin-buttons > .ModModal > .bottom-bar-button {
+.admin-buttons > .ModModal > .bottom-bar-button,  .admin-buttons > .EvidenceModal > .bottom-bar-button {
   width: 100%;
 }

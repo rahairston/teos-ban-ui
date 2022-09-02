@@ -26,7 +26,9 @@ function ModModal(props: IProps) {
   useEffect(() => {
     return () => {
       setSelectedView("None");
-      load(appealId);
+      if (open) {
+        load(appealId);
+      }
     }
   }, [open, load, appealId])
 
@@ -64,12 +66,7 @@ function ModModal(props: IProps) {
             {selectedView === "BannedBy" && <BannedBy appealId={appealId} setOpen={setOpen}/>}
             {selectedView === "AddEvidence" && <Evidence appealId={appealId} open={open} />}
         </Modal.Content>
-        {selectedView === "BannedBy" && <Modal.Actions>
-          <Button onClick={() => setSelectedView("None")}>
-            Go back
-          </Button>
-        </Modal.Actions>}
-        {selectedView === "AddEvidence" && <Modal.Actions>
+        {selectedView !== "None" && <Modal.Actions>
           <Button onClick={() => setSelectedView("None")}>
             Go back
           </Button>

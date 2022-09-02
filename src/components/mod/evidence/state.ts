@@ -1,4 +1,5 @@
 export interface EvidenceState {
-  isLoading: boolean;
+  error: string;
+  success: string;
   isSubmitting: boolean;
 }
