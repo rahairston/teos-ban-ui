@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
 import { Button, Form } from 'semantic-ui-react';
 import { Dispatch } from 'redux';
-import * as _ from 'lodash';
 import { isUserAdmin, loaderOverride } from '../../util/common';
 import { AppealRequest, BanType } from './api';
 import { clearAppeal, load, update } from './reducer';

@@ -1,0 +1,22 @@
+.existing-ban-data {
+  color: black !important;
+}
+
+.banning-input {
+  width: 45% !important;
+  margin-right: 1%;
+}
+
+.delete-ban-data {
+  width: 7%;
+  vertical-align: middle !important;
+  padding: .75560359em 1.5em .72560359em !important;
+}
+
+.error > input {
+  background-color: #fff6f6 !important;
+  border-color: #e0b4b4 !important;
+  color: #9f3a38 !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}

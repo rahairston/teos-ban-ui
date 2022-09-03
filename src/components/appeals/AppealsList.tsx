@@ -19,6 +19,7 @@ interface IProps {
   totalPages: number;
   totalSize: number;
   isLoading: boolean;
+  roles?: string[];
   load: (filters: AppealFilters) => void;
   clear: () => void;
 }
@@ -98,7 +99,7 @@ function AppealsList(props: IProps) {
 
   let [searchParams, setSearchParams] = useSearchParams();
 
-  const { appeals, totalSize, totalPages, load, clear } = props;
+  const { appeals, totalSize, totalPages, load, clear, roles } = props;
   const [pageData, setPageData] = useState({pageCount: 1, pageSize: 10})
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
   const banTypeFilter = !!searchParams.get("type") ? searchParams.get("type") : "All"
@@ -136,7 +137,7 @@ function AppealsList(props: IProps) {
           <Grid.Column className="grid-header">
               Ban Appeals
           </Grid.Column>
-          <Grid.Column className="filter-column">
+          {isUserAdmin(roles) && <Grid.Column className="filter-column">
             <Dropdown text={`Type: ${banTypeFilter}`} className="type-filters">
               <Dropdown.Menu>
               <Dropdown.Item className="display-item" text="All" onClick={() => setFilters("All", statusFilter, setSearchParams)}/>
@@ -154,7 +155,8 @@ function AppealsList(props: IProps) {
                 <Dropdown.Item className="display-item" text="Ban Upheld" onClick={() => setFilters(banTypeFilter, "Ban Upheld", setSearchParams)}/>
               </Dropdown.Menu>
             </Dropdown>
-          </Grid.Column>
+          </Grid.Column>}
+          {!isUserAdmin(roles) && <Grid.Column className="filter-column" />}
           <Grid.Column>
             <Dropdown text={`${pageSize}`} className="display-count">
               <Dropdown.Menu>

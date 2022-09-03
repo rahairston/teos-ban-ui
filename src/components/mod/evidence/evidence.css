@@ -7,5 +7,19 @@
 }
 
 .notes-view > p, .notes-view > ul > li {
-  font-size: x-large !important;
+  font-size: large !important;
+}
+
+.notes-view {
+  border: 1px;
+}
+
+a.item {
+  color: yellow !important;
+  font-family: 'Komika Title';
+  font-weight: 550 !important;
+}
+
+a.item.active {
+  color: black !important;
 }

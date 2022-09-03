@@ -70,3 +70,11 @@
   display: inline-block;
   vertical-align: middle;
 }
+
+.ui.modal > div {
+  background: #707070 !important;
+}
+
+.ui.modal > .header {
+  color: yellow !important;
+}

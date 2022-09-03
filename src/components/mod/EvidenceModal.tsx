@@ -38,7 +38,7 @@ function EvidenceModal(props: IProps) {
         <Header icon>
           Review Evidence
         </Header>
-        <Modal.Content>
+        <Modal.Content scrolling>
             <EvidenceView />
         </Modal.Content>
         <Modal.Actions>

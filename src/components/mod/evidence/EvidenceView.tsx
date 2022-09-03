@@ -2,13 +2,15 @@ import './evidence.css'
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { BanState } from '../../../redux/state';
-import { Form, Image, Tab, TabPane } from 'semantic-ui-react';
+import { Form, Grid, GridColumn, Image, Tab, TabPane } from 'semantic-ui-react';
 import * as _ from 'lodash';
 import { EvidenceResponse } from './api';
 import ReactMarkdown from 'react-markdown';
+import { BannedByObject } from '../bannedBy/api';
 
 interface IProps {
   evidence?: EvidenceResponse[];
+  bannedBy?: BannedByObject[];
 }
 const isPaneLoading = (evidence: EvidenceResponse, fileLoaded: boolean): boolean => {
   return !(!evidence.evidenceId || fileLoaded);
@@ -43,11 +45,15 @@ const onLoadError = (index: number, errors: string[], setErrors: (e: any) => any
 }
 
 const renderNotes = (notes?: string): string => {
-  return notes ? `# Admin Notes:
-${notes}` : `## No notes`;
+  return notes ? `### Admin Notes:  \n${notes}` : `### No notes`;
+}
+
+const renderBannedBy = (bannedBy: BannedByObject[]): string => {
+  return `### Banned By:  \n${_.join(bannedBy.map((banned: BannedByObject) => { return `- ${banned.name}: ${banned.banDate}  \n` }), "")}`;
 }
 
 const renderPanes = (evidence: EvidenceResponse[],
+                      bannedBy: BannedByObject[],
                       errors: any[], 
                       setErrors: (e: any) => any,
                       loaded: boolean[],
@@ -66,7 +72,14 @@ const renderPanes = (evidence: EvidenceResponse[],
             }
             {errors[index] !== "" && <small className='error'>{errors[index]}</small>}
             <hr />
-            <ReactMarkdown className="notes-view">{renderNotes(e.notes)}</ReactMarkdown>
+            <Grid columns={2} celled>
+              <GridColumn>
+              <ReactMarkdown className="notes-view">{renderNotes(e.notes)}</ReactMarkdown>
+              </GridColumn>
+              <GridColumn>
+              <ReactMarkdown className="notes-view">{renderBannedBy(bannedBy)}</ReactMarkdown>
+              </GridColumn>
+            </Grid>
           </Form>
         </TabPane>)
       }
@@ -79,7 +92,7 @@ const renderPanes = (evidence: EvidenceResponse[],
 
 function EvidenceView(props: IProps) {
 
-  const { evidence = [] } = props;
+  const { evidence = [], bannedBy = [] } = props;
   const [errors, setErrors] = useState(_.times((evidence ? evidence.length : 0), _.constant(-1)));
   const [loaded, setLoaded] = useState(_.times((evidence ? evidence.length : 0), _.constant(false)));
 
@@ -88,7 +101,7 @@ function EvidenceView(props: IProps) {
   return (
     <div className="Evidence">
       <Tab 
-        panes={renderPanes(evidence, errors, setErrors, loaded, setLoaded)}
+        panes={renderPanes(evidence, bannedBy, errors, setErrors, loaded, setLoaded)}
       />
     </div>
   );
@@ -97,6 +110,7 @@ function EvidenceView(props: IProps) {
 const mapStateToProps = (state: BanState) => {
   return {
     evidence: state.appeal.evidence,
+    bannedBy: state.appeal.bannedBy,
     error: state.evidence.error,
     success: state.evidence.success
   }
