@@ -21,6 +21,7 @@
     "js-loader": "^0.1.1",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
+    "react-date-picker": "^8.4.0",
     "react-icons": "^4.4.0",
     "react-markdown": "^8.0.3",
     "react-redux": "^8.0.2",

@@ -1,22 +1,57 @@
-.existing-ban-data {
+.react-date-picker__wrapper {
+  padding-left: 5px;
+  font-size: x-large;
+}
+
+.react-date-picker__inputGroup__input {
+  min-width: 0.54em !important;
+  height: 100% !important;
+  position: relative !important;
+  padding: 0 1px !important;
+  border: 0 !important;
+  background: none !important;
+  font: inherit !important;
+  box-sizing: content-box !important;
+  -moz-appearance: textfield !important;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: black !important;
+}
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #757575 !important;
+}
+
+.react-date-picker__wrapper {
+  background: #e0e1e2 !important;
+  border-radius: .28571429rem;
+}
+
+label > small.date-format {
+  font-size: medium !important;
+}
+
+small.required-text {
+  color: yellow;
+  font-size: small;
+}
+
+.judgement-type.active {
+  background-color: green !important;
+}
+
+.status-label {
+  cursor: pointer;
+}
+
+.JudgementView.modal > .ui {
   color: black !important;
 }
 
-.banning-input {
-  width: 45% !important;
-  margin-right: 1%;
-}
-
-.delete-ban-data {
-  width: 7%;
-  vertical-align: middle !important;
-  padding: .75560359em 1.5em .72560359em !important;
-}
-
-.error > input {
-  background-color: #fff6f6 !important;
-  border-color: #e0b4b4 !important;
-  color: #9f3a38 !important;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
+.judgement-view {
+  background-color: #acacac;
+  border-radius: 2%;
+  margin: auto;
+  padding: 1%;
+  min-height: auto;
 }

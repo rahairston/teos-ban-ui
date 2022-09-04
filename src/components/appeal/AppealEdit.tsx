@@ -63,8 +63,6 @@ const validateSubmit = (data: AppealRequest, twitchUsername: string|undefined, r
     err.appealReason = "Appeal reason must be 10 characters minimum."
   }
 
-  console.log(data, data.discordUsername);
-
   if (Object.keys(err).length > 0 || !appealId) {
     setErrors(err);
   } else {

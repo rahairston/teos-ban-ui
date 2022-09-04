@@ -36,7 +36,6 @@ const validateSubmit = (data: AppealRequest, twitchUsername: string, roles: stri
   if (!data.banReason) {
     err.banReason = "Ban reason must not be empty."
   } else if (data.banReason.length < 10) { 
-    console.log(data);
     err.banReason = "Ban reason must be 10 characters minimum."
   }
 

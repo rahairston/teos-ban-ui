@@ -9,7 +9,7 @@ export enum JudgementStatus {
 
 export interface JudgementObject {
   status: JudgementStatus;
-  resubmitAfterDate?: Date;
+  resubmitAfterDate?: number;
   notes?: string;
 }
 

@@ -3,17 +3,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
-import { Dispatch } from 'redux';
-import { load } from '../appeal/reducer';
+import { EvidenceResponse } from './evidence/api';
 import EvidenceView from './evidence/EvidenceView';
 interface IProps {
   setOpen: (open: boolean) => void;
+  evidence?: EvidenceResponse[];
   open: boolean;
 }
 
 function EvidenceModal(props: IProps) {
 
-  const { setOpen, open } = props;
+  const { setOpen, open, evidence } = props;
 
   return (
     <div className="EvidenceModal">
@@ -39,7 +39,8 @@ function EvidenceModal(props: IProps) {
           Review Evidence
         </Header>
         <Modal.Content scrolling>
-            <EvidenceView />
+            {!!evidence && evidence.length > 0 && <EvidenceView />}
+            {(!evidence || evidence.length === 0) && <div>No Evidence Submitted</div>}
         </Modal.Content>
         <Modal.Actions>
           <Button onClick={() => setOpen(false)}>
@@ -53,17 +54,8 @@ function EvidenceModal(props: IProps) {
 
 const mapStateToProps = (state: BanState) => {
   return {
-    bannedBy: state.appeal.bannedBy,
-    evidence: state.appeal.evidence,
-    roles: state.auth.roles,
-    error: state.alert.error
+    evidence: state.appeal.evidence
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    load: (appealId: string) => load(appealId)(dispatch),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(EvidenceModal);
+export default connect(mapStateToProps, null)(EvidenceModal);

@@ -3,7 +3,7 @@ import { JudgementObject, submitJudgement } from './api';
 import { Dispatch } from 'redux';
 import { JudgementState } from './state';
 import { ErrorResponseWrapper } from '../../../constants';
-import { error, success } from '../../alert/reducer';
+import { errorDispatch, successDispatch } from '../../alert/reducer';
 
 const initialState: JudgementState = {
   isSubmitting: false
@@ -33,24 +33,24 @@ export const submit = (appealId: string, request: JudgementObject) => (dispatch:
   dispatch(submitStart());
   submitJudgement(appealId, request).then(() => {
     dispatch(submitComplete());
-    dispatch(success({
+    successDispatch({
       header: "Updated Appeal",
-      message: "Added Banned By Data."
-    }));
+      message: "Judgement submitted."
+    })(dispatch);
   }).catch((err: ErrorResponseWrapper) => {
     dispatch(submitOrLoadError());
     const {response} = err;
-    const header = "Unable to submit Banned By data."
+    const header = "Unable to submit Judgement."
     if (response.status === 500) {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Internal Server Error"
-      }));
+      })(dispatch);
     } else {
-      dispatch(error({
+      errorDispatch({
         header,
         message: response.data.message
-      }));
+      })(dispatch);
     }
   });
 }

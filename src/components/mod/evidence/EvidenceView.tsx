@@ -74,10 +74,10 @@ const renderPanes = (evidence: EvidenceResponse[],
             <hr />
             <Grid columns={2} celled>
               <GridColumn>
-              <ReactMarkdown className="notes-view">{renderNotes(e.notes)}</ReactMarkdown>
+                <ReactMarkdown className="notes-view">{renderNotes(e.notes)}</ReactMarkdown>
               </GridColumn>
               <GridColumn>
-              <ReactMarkdown className="notes-view">{renderBannedBy(bannedBy)}</ReactMarkdown>
+                <ReactMarkdown className="notes-view">{renderBannedBy(bannedBy)}</ReactMarkdown>
               </GridColumn>
             </Grid>
           </Form>

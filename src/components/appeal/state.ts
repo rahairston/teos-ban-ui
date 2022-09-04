@@ -1,6 +1,6 @@
 import { BannedByObject } from "../mod/bannedBy/api";
 import { EvidenceResponse } from "../mod/evidence/api";
-import { JudgementResponse } from "./api";
+import { JudgementObject } from "../mod/judgement/api";
 
 export interface AppealState {
     appealId?: string;
@@ -20,6 +20,6 @@ export interface AppealState {
 
     // Admin related
     bannedBy?: BannedByObject[];
-    judgement?: JudgementResponse;
+    judgement?: JudgementObject;
     evidence?: EvidenceResponse[];
 }

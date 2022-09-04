@@ -1,16 +1,12 @@
 import { axiosInstance } from "../../util/axios";
 import { BannedByObject } from "../mod/bannedBy/api";
 import { EvidenceResponse } from "../mod/evidence/api";
+import { JudgementObject } from "../mod/judgement/api";
 
 export enum BanType {
   TWITCH = "TWITCH",
   DISCORD = "DISCORD",
   BOTH = "BOTH"
-}
-
-export interface JudgementResponse {
-  judgementId?: string;
-  status?: string;
 }
 export interface AppealResponse {
     appealId: string;
@@ -23,7 +19,7 @@ export interface AppealResponse {
     additionalNotes?: string;
     previousAppealId?: string;
     additionalData?: string;
-    judgement?: JudgementResponse;
+    judgement?: JudgementObject;
     evidence?: EvidenceResponse[];
     bannedBy?: BannedByObject[]
 }

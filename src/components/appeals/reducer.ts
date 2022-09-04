@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import * as _ from 'lodash';
 import { AppealsState } from './state';
 import { ErrorResponseWrapper } from '../../constants';
-import { error } from '../alert/reducer';
+import { errorDispatch } from '../alert/reducer';
 import { AppealResponse } from '../appeal/api';
 
 const initialState: AppealsState = {
@@ -44,15 +44,15 @@ export const load = (filters: AppealFilters) => (dispatch: Dispatch) => {
     const {response} = err;
     const header = `Unable to get appeals`
     if (response.status === 500) {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Internal Server Error"
-      }));
+      })(dispatch);
     } else {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Error"
-      }));
+      })(dispatch);
     }
   });
 }

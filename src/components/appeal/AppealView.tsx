@@ -3,16 +3,19 @@ import './view.css';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { BanState } from '../../redux/state';
-import { Button, ButtonGroup, Form, Grid, Icon, Input, Label, SemanticCOLORS } from 'semantic-ui-react';
+import { Button, ButtonGroup, Form, Grid, Icon, Input, Label } from 'semantic-ui-react';
 import { Dispatch } from 'redux';
 import { isUserAdmin, loaderOverride } from '../../util/common';
 import { clearAppeal, load } from './reducer';
 import { Link, useParams } from 'react-router-dom';
-import { BanType, JudgementResponse } from './api';
+import { BanType } from './api';
 import { PulseLoader } from 'react-spinners';
 import Delete from '../deleteModal/delete';
 import ModModal from '../mod/ModModal';
 import EvidenceModal from '../mod/EvidenceModal';
+import { JudgementObject } from '../mod/judgement/api';
+import JudgementModal from '../mod/JudgementModal';
+import JudgementView from '../mod/judgement/JudgementView';
 interface IProps {
   load: (appealId: string) => void;
   clear: () => void;
@@ -26,27 +29,12 @@ interface IProps {
   additionalNotes?: string;
   previousAppealId?: string;
   additionalData?: string;
-  judgement?: JudgementResponse;
+  judgement?: JudgementObject;
   prevPageId?: string;
   nextPageId?: string;
   isLoading: boolean;
   error?: boolean;
   roles?: string[];
-}
-
-const getColorByStatus = (judgementStatus: string | undefined): SemanticCOLORS => {
-  const status = judgementStatus ? judgementStatus.toUpperCase() : "";
-  switch (status) {
-    case "PENDING":
-    case "REVIEWING":
-      return "yellow";
-    case "UNBANNED":
-      return "green";
-    case "BAN UPHELD":
-      return "red";
-    default:
-      return "purple";
-  }
 }
 
 const isEditable = (judgementStatus: any | undefined): boolean => {
@@ -59,6 +47,8 @@ function Appeal(props: IProps) {
   const [openDelete, setDeleteOpen] = useState(false);
   const [openMod, setModOpen] = useState(false);
   const [openEvidence, setEvidenceOpen] = useState(false);
+  const [openJudgement, setJudgementOpen] = useState(false);
+  const [userJudgementOpen, setUserJudgementOpen] = useState(false);
 
   const {appealId, twitchUsername, discordUsername, banType, 
       banReason, banJustified, appealReason, additionalNotes, judgement,
@@ -163,22 +153,15 @@ function Appeal(props: IProps) {
                   setOpen={setEvidenceOpen}
                 />
                 <Button.Or className="admin-or" />
-                <Button 
-                  type='submit' 
-                  animated='fade'
-                  className="bottom-bar-button"
-                  onClick={() => setUsernameVisible(!usernameVisible)}
-                >
-                  <Button.Content className="hidden-text" hidden>Submit{<br />}Judgement</Button.Content>
-                  <Button.Content visible>
-                    <Icon size="large" name="legal" className="bottom-icons" />
-                  </Button.Content>
-                </Button>
+                <JudgementModal 
+                  appealId={appealId}
+                  open={openJudgement}
+                  setOpen={setJudgementOpen}
+                />
               </ButtonGroup>}
               </div>
               <div className="bottom-bar">
-                {judgement && <Label color={getColorByStatus(judgement.status)} size="big" className="status-label">{judgement.status}
-                  </Label>}
+                {judgement && <JudgementView open={userJudgementOpen} setOpen={setUserJudgementOpen} />}
               </div>
             </div>
           </Form>

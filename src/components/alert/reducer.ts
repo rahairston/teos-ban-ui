@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Dispatch } from 'redux';
 import { AlertState } from './state';
 
 const initialState: AlertState = {
@@ -14,6 +15,8 @@ const initialState: AlertState = {
   errorHeader: undefined,
   errorMessage: undefined
 };
+
+const alertTimeout = 5 * 1000;
 
 export interface AlertPayload {
   header: string;
@@ -66,6 +69,27 @@ export const alertReducer = createSlice({
     }
   }
 });
+
+export const successDispatch = (request: AlertPayload) => (dispatch: Dispatch) => {
+  dispatch(success(request));
+  setTimeout(() => {
+    dispatch(clearSuccess())
+  }, alertTimeout);
+}
+
+export const infoDispatch = (request: AlertPayload) => (dispatch: Dispatch) => {
+  dispatch(info(request));
+  setTimeout(() => {
+    dispatch(clearInfo())
+  }, alertTimeout);
+}
+
+export const errorDispatch = (request: AlertPayload) => (dispatch: Dispatch) => {
+  dispatch(error(request));
+  setTimeout(() => {
+    dispatch(clearError())
+  }, alertTimeout);
+}
 
 export const { info, clearInfo, error, clearError, success, clearSuccess, clearAllAlerts } = alertReducer.actions;
 

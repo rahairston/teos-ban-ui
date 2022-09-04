@@ -14,12 +14,12 @@
   border: 1px;
 }
 
-a.item {
+.tabular.menu > a.item {
   color: yellow !important;
   font-family: 'Komika Title';
   font-weight: 550 !important;
 }
 
-a.item.active {
+.tabular.menu > a.item.active {
   color: black !important;
 }

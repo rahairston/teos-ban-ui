@@ -80,7 +80,6 @@ const mapStateToProps = (state: BanState) => {
   return {
     bannedBy: state.appeal.bannedBy,
     evidence: state.appeal.evidence,
-    roles: state.auth.roles,
     error: state.alert.error
   }
 }

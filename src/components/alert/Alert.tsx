@@ -26,7 +26,7 @@ interface IProps {
 const genericAlert = (info: boolean, error: boolean, success: boolean, 
   header: string, message: string | undefined, link: string | undefined, linkText: string | undefined ,onClick: () => void) => {
   return (
-    <Message className="alert-message" info={info} negative={error} success={success} onClick={() => onClick()}>
+    <Message className="alert-message" info={info} negative={error} success={success} onClick={() => onClick()} onDismiss={() => onClick()}>
       <Message.Header>{header}</Message.Header>
       <Message.Content>
         {message} {!!link && <Link to={link}>{linkText}</Link>}

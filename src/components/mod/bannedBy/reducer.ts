@@ -3,7 +3,7 @@ import { BannedByObject, submitBannedBy } from './api';
 import { Dispatch } from 'redux';
 import { BannedByState } from './state';
 import { ErrorResponseWrapper } from '../../../constants';
-import { error, success } from '../../alert/reducer';
+import { errorDispatch, successDispatch } from '../../alert/reducer';
 
 const initialState: BannedByState = {
   isLoading: false,
@@ -35,24 +35,24 @@ export const submit = (appealId: string, request: BannedByObject[]) => (dispatch
   dispatch(submitStart());
   submitBannedBy(appealId, request).then(() => {
     dispatch(submitComplete());
-    dispatch(success({
+    successDispatch({
       header: "Updated Appeal",
       message: "Added Banned By Data."
-    }));
+    })(dispatch);
   }).catch((err: ErrorResponseWrapper) => {
     dispatch(submitOrLoadError());
     const {response} = err;
     const header = "Unable to submit Banned By data."
     if (response.status === 500) {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Internal Server Error"
-      }));
+      })(dispatch);
     } else {
-      dispatch(error({
+      errorDispatch({
         header,
         message: response.data.message
-      }));
+      })(dispatch);
     }
   });
 }

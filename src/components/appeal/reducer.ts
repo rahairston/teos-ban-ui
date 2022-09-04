@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { Dispatch } from 'redux';
 import { AppealState } from './state';
 import { ErrorResponseWrapper } from '../../constants';
-import { error, success } from '../alert/reducer';
+import { errorDispatch, successDispatch } from '../alert/reducer';
 import { EvidenceResponse } from '../mod/evidence/api';
 
 const initialState: AppealState = {
@@ -43,7 +43,7 @@ export const appealReducer = createSlice({
     },
     loadingComplete: (state, action: PayloadAction<AppealResponse>) => {
       state.isLoading = false;
-      state = _.mergeWith(state, action.payload, (a, b) => _.isArray(b) ? b : undefined);
+      state = _.mergeWith(state, action.payload, (a, b) => _.isArray(b) || _.isObject(b) ? b : undefined);
     },
     updateEvidenceFromModal: (state, action: PayloadAction<EvidenceResponse>) => {
       const index = _.findIndex(state.evidence, (evidence: EvidenceResponse) => {
@@ -74,27 +74,27 @@ export const appealReducer = createSlice({
 export const submit = (request: AppealRequest) => (dispatch: Dispatch) => {
   dispatch(submitStart());
   submitAppeal(request).then((location: string) => {
-    dispatch(success({
+    successDispatch({
       header: "Created Appeal",
       message: "You can view it ",
       link: `/appeals/${location}`,
       linkText: "here"
-    }))
+    })(dispatch);
     dispatch(submitComplete());
   }).catch((err: ErrorResponseWrapper) => {
     dispatch(submitOrLoadError());
     const {response} = err;
     const header = "Unable to submit appeal."
     if (response.status === 500) {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Internal Server Error"
-      }));
+      })(dispatch);
     } else {
-      dispatch(error({
+      errorDispatch({
         header,
         message: response.data.message
-      }));
+      })(dispatch);
     }
   });
 }
@@ -108,15 +108,15 @@ export const load = (appealId: string) => (dispatch: Dispatch) => {
     const {response} = err;
     const header = `Unable to get appeal with ID ${appealId}`
     if (response.status === 500) {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Internal Server Error"
-      }));
+      })(dispatch);
     } else {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Error"
-      }));
+      })(dispatch);
     }
   });
 }
@@ -125,26 +125,26 @@ export const update = (appealId: string, request: AppealRequest) => (dispatch: D
   dispatch(submitStart());
   updateAppeal(appealId, request).then(() => {
     dispatch(submitComplete());
-    dispatch(success({
+    successDispatch({
       header: "Updated Appeal",
       message: "You can view it ",
       link: `/appeals/${appealId}`,
       linkText: "here"
-    }));
+    })(dispatch);
   }).catch((err: ErrorResponseWrapper) => {
     dispatch(submitOrLoadError());
     const {response} = err;
     const header = `Unable to update appeal with ID ${appealId}`
     if (response.status === 500) {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Internal Server Error"
-      }));
+      })(dispatch);
     } else {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Error"
-      }));
+      })(dispatch);
     }
   });
 }
@@ -153,24 +153,24 @@ export const deleteApp = (appealId: string) => (dispatch: Dispatch) => {
   dispatch(deleteStart());
   deleteAppeal(appealId).then(() => {
     dispatch(clearAppeal());
-    dispatch(success({
+    successDispatch({
       header: "Deleted",
       message: "Appeal was deleted."
-    }))
+    })(dispatch);
   }).catch((err: ErrorResponseWrapper) => {
     dispatch(submitOrLoadError());
     const {response} = err;
     const header = `Unable to delete appeal with ID ${appealId}`
     if (response.status === 500) {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Internal Server Error"
-      }));
+      })(dispatch);
     } else {
-      dispatch(error({
+      errorDispatch({
         header,
         message: "Error"
-      }));
+      })(dispatch);
     }
   });
 }
