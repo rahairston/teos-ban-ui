@@ -29,6 +29,7 @@ interface IProps {
   additionalNotes?: string;
   previousAppealId?: string;
   additionalData?: string;
+  adminNotes?: string;
   judgement?: JudgementObject;
   prevPageId?: string;
   nextPageId?: string;
@@ -51,7 +52,7 @@ function Appeal(props: IProps) {
   const [userJudgementOpen, setUserJudgementOpen] = useState(false);
 
   const {appealId, twitchUsername, discordUsername, banType, 
-      banReason, banJustified, appealReason, additionalNotes, judgement,
+      banReason, banJustified, appealReason, additionalNotes, adminNotes, judgement,
       previousAppealId, additionalData, prevPageId, nextPageId, isLoading, load, clear, roles} = props;
   
   useEffect(() => {    
@@ -90,6 +91,13 @@ function Appeal(props: IProps) {
                 value={twitchUsername} disabled type={usernameVisible ? "text" : "password"}
               />
             </Form.Field>
+            {!!previousAppealId && <Form.Field>
+              <Link to={`/appeals/${previousAppealId}`}><Button color="red" inverted>Resubmitted</Button></Link>
+            </Form.Field>}
+            {!!previousAppealId && !!additionalData && <Form.Field>
+              <label>Additional Resubmission Data</label>
+              <Label className='view'>{additionalData}</Label>
+            </Form.Field>}
             {banType && <Form.Field>
               <label>Where were you banned?</label>
                 <Button className="ban-type view">
@@ -117,6 +125,10 @@ function Appeal(props: IProps) {
             {!!additionalNotes && <Form.Field>
               <label>Anything else you'd like to add?</label>
               <Label className='view'>{additionalNotes}</Label>
+            </Form.Field>}
+            {!!adminNotes && <Form.Field>
+              <label>Admin Notes</label>
+              <Label className='view'>{adminNotes}</Label>
             </Form.Field>}
             <hr />
             <div>
@@ -191,6 +203,7 @@ const mapStateToProps = (state: BanState) => {
     additionalNotes: state.appeal.additionalNotes,
     previousAppealId: state.appeal.previousAppealId,
     additionalData: state.appeal.additionalData,
+    adminNotes: state.appeal.adminNotes,
     judgement: state.appeal.judgement,
     prevPageId: state.appeal.prevPageId,
     nextPageId: state.appeal.nextPageId,

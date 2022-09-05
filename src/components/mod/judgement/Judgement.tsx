@@ -34,8 +34,9 @@ const validateSubmit = (status: JudgementStatus,
 const changesExist = (status: JudgementStatus, resubmit: boolean,
     resubmitDate: Date, notes: string|undefined, judgement: JudgementObject): boolean => {
   return (status !== judgement.status ||
-    (resubmit && !!judgement.resubmitAfterDate &&  resubmitDate.getTime() !== judgement.resubmitAfterDate) ||
-    (!resubmit && !!judgement.resubmitAfterDate && status !== judgement.status) || // case: initially had resubmit but we are removing it
+    (resubmit && !judgement.resubmitAfterDate && resubmitDate.getTime() !== judgement.resubmitAfterDate) ||
+    (resubmit && !!judgement.resubmitAfterDate && resubmitDate.getTime() !== judgement.resubmitAfterDate) ||
+    (!resubmit && !!judgement.resubmitAfterDate && status === judgement.status) || // case: initially had resubmit but we are removing it
     notes !== judgement.notes);
 }
 

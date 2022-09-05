@@ -16,6 +16,18 @@ const renderDate = (date: Date): string => {
   return `Can Resubmit After: ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 }
 
+const renderHeader = (status: JudgementStatus): string => {
+  switch (status) {
+    case JudgementStatus.PENDING:
+      return `Waiting for Evidence`;
+    case JudgementStatus.REVIEWING:
+      return `Reviewing Submitted Evidence`
+    case JudgementStatus.BAN_UPHELD:
+    case JudgementStatus.UNBANNED:
+      return status.toString()
+  }
+}
+
 const renderContent = (status: JudgementStatus, resubmitAfterDate: number|undefined, notes: string|undefined) => {
   
   return (
@@ -27,8 +39,8 @@ const renderContent = (status: JudgementStatus, resubmitAfterDate: number|undefi
         <label>{renderDate(new Date(resubmitAfterDate))}</label>
       </Form.Field>}
       <Form.Field>
-        <label>Admin Notes: </label>
-        <ReactMarkdown className="notes-view">{!!notes ? notes : ""}</ReactMarkdown>
+        <label>Judgement Notes: </label>
+        <ReactMarkdown className="notes-view">{!!notes ? notes : "None"}</ReactMarkdown>
       </Form.Field>
     </Form>
   );
@@ -68,7 +80,7 @@ function JudgementView(props: IProps) {
         }
       >
         <Header icon>
-          Status: {status}
+          Status: {renderHeader(status)}
         </Header>
         <Modal.Content>
             {renderContent(status, resubmitAfterDate, notes)}

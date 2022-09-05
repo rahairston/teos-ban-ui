@@ -44,10 +44,6 @@ small.required-text {
   cursor: pointer;
 }
 
-.JudgementView.modal > .ui {
-  color: black !important;
-}
-
 .judgement-view {
   background-color: #acacac;
   border-radius: 2%;

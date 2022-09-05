@@ -19,6 +19,7 @@ export interface AppealState {
     isSubmitting: boolean;
 
     // Admin related
+    adminNotes?: string;
     bannedBy?: BannedByObject[];
     judgement?: JudgementObject;
     evidence?: EvidenceResponse[];

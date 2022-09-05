@@ -19,6 +19,7 @@ export interface AppealResponse {
     additionalNotes?: string;
     previousAppealId?: string;
     additionalData?: string;
+    adminNotes?: string;
     judgement?: JudgementObject;
     evidence?: EvidenceResponse[];
     bannedBy?: BannedByObject[]
@@ -34,6 +35,7 @@ export interface AppealRequest {
   additionalNotes?: string;
   previousAppealId: string;
   additionalData?: string;
+  adminNotes?: string;
 }
 
 const basePath = "/appeals"

@@ -78,3 +78,7 @@
 .ui.modal > .header {
   color: yellow !important;
 }
+
+label.previous-appeal {
+  display: inline-block !important;
+}

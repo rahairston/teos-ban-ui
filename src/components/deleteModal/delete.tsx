@@ -22,6 +22,7 @@ function DeleteModal(props: IProps) {
   return (
     <div className="DeleteModal">
       <Modal
+        className="DeleteModal"
         basic
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}

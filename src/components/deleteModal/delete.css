@@ -5,3 +5,10 @@
 .are-you-sure {
   font-size: large !important;
 }
+
+.DeleteModal.ui.basic, 
+.DeleteModal.ui.basic > .ui.header,
+.DeleteModal.ui.basic > .content,
+.DeleteModal.ui.basic > .actions {
+  background-color: transparent !important;
+}

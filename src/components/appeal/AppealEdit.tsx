@@ -23,6 +23,7 @@ interface IProps {
   additionalNotes?: string;
   previousAppealId?: string;
   additionalData?: string;
+  adminNotes? : string;
   isLoading: boolean;
   error?: boolean;
   submit: (appealId: string, request: AppealRequest) => void;
@@ -106,6 +107,7 @@ function AppealEdit(props: IProps) {
   const [banJustified, setBanJustified] = useState(props.banJustified);
   const [appealReason, setAppealReason] = useState(props.appealReason);
   const [additionalNotes, setAdditionalNotes] = useState(props.additionalNotes);
+  const [adminNotes, setAdminNotes] = useState(props.adminNotes)
 
   useEffect(() => {    
     if (params.id) {
@@ -126,7 +128,8 @@ function AppealEdit(props: IProps) {
     appealReason,
     additionalNotes,
     previousAppealId: "",
-    additionalData: undefined
+    additionalData: undefined,
+    adminNotes
   } as AppealRequest;
 
   return (
@@ -212,6 +215,13 @@ function AppealEdit(props: IProps) {
             value={additionalNotes !== undefined ? additionalNotes : props.additionalNotes}
             onChange={(e: any) => setAdditionalNotes(e.target.value)}/>
         </Form.Field>
+        {isUserAdmin(roles) && <Form.Field>
+          <label>Notes from Admin</label>
+          <textarea 
+            placeholder="Notes from admin to user if anything needs to change"
+            value={adminNotes !== undefined ? adminNotes : props.adminNotes}
+            onChange={(e: any) => setAdminNotes(e.target.value)}/>
+        </Form.Field>}
         <hr />
         <Button 
           type='submit' 
@@ -243,6 +253,7 @@ const mapStateToProps = (state: BanState) => {
     additionalNotes: state.appeal.additionalNotes,
     previousAppealId: state.appeal.previousAppealId,
     additionalData: state.appeal.additionalData,
+    adminNotes: state.appeal.adminNotes,
     judgement: state.appeal.judgement,
     prevPageId: state.appeal.prevPageId,
     nextPageId: state.appeal.nextPageId,

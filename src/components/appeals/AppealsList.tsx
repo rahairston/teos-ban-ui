@@ -116,7 +116,7 @@ function AppealsList(props: IProps) {
   
   useEffect(() => {
     const filters: AppealFilters = {
-      pageCount: pageData.pageCount,
+      pageCount: pageData.pageCount - 1,
       pageSize: pageData.pageSize,
       type: banTypeFilter === "All" ? undefined : (banTypeFilter === null ? undefined : banTypeFilter.toUpperCase()),
       status: statusFilter === "All" ? undefined : (statusFilter === null ? undefined : statusFilter)
